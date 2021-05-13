@@ -6,5 +6,9 @@ public abstract class Word {
 	public Word(String name) {
 		this.name = name;
 	}
+	
+	public String getName() {
+		return name;
+	}
 
 }

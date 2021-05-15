@@ -10,5 +10,4 @@ public abstract class Word {
 	public String getName() {
 		return name;
 	}
-
 }

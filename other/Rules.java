@@ -27,4 +27,8 @@ public class Rules {
 	public Element getE() {
 		return e;
 	}
+	
+	public boolean isWin() {
+		return op.getName().equals("Is") && p.getName().equals("Win");
+	}
 }

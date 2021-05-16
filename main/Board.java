@@ -21,13 +21,14 @@ public class Board {
 		Objects.requireNonNull(height);
 		Objects.requireNonNull(list);
 		if (board.length!=height) {
-			throw new IllegalArgumentException("Le nombre de lignes du plateau n'est pas égal au nombre de lignes donné !");
+			throw new IllegalArgumentException("Le nombre de lignes du plateau n'est pas ï¿½gal au nombre de lignes donnï¿½ !");
 		}
 		for (int i=0; i<board.length; i++) {
 			if (board[i].length!=length) {
-				throw new IllegalArgumentException("Le nombre de colonnes du plateau n'est pas égal au nombre de colonnes donné !");
+				throw new IllegalArgumentException("Le nombre de colonnes du plateau n'est pas ï¿½gal au nombre de colonnes donnï¿½ !");
 			}
 		}
+		
 		this.board = board;
 		this.length = length;
 		this.height = height;

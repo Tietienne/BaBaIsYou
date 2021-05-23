@@ -1,33 +1,33 @@
-package main;
+package other;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import fr.umlv.zen5.KeyboardKey;
-import other.Rules;
 import word.Element;
 import word.Word;
 
 public class Board {
-	private Word[][] board;
+	private List<List<List<Word>>> board;
 	private int length;
 	private int height;
 	private ArrayList<Rules> rules;
 	
-	public Board(Word[][] board, int length, int height, List<Rules> list) {
+	public Board(List<List<List<Word>>> board, int length, int height, List<Rules> list) {
 		Objects.requireNonNull(board);
 		Objects.requireNonNull(length);
 		Objects.requireNonNull(height);
 		Objects.requireNonNull(list);
-		if (board.length!=height) {
+		
+		/*if (board.length!=height) {
 			throw new IllegalArgumentException("Le nombre de lignes du plateau n'est pas ï¿½gal au nombre de lignes donnï¿½ !");
 		}
 		for (int i=0; i<board.length; i++) {
 			if (board[i].length!=length) {
 				throw new IllegalArgumentException("Le nombre de colonnes du plateau n'est pas ï¿½gal au nombre de colonnes donnï¿½ !");
 			}
-		}
+		}*/
 		
 		this.board = board;
 		this.length = length;
@@ -92,7 +92,7 @@ public class Board {
 	
 	private boolean win(Word w) {
 		for (Rules r : rules) {
-			// Si on a la règle gagnante : on vérifie si le mot sur lequel on va arriver en fait partie
+			// Si on a la rï¿½gle gagnante : on vï¿½rifie si le mot sur lequel on va arriver en fait partie
 			if (r.isWin() && r.getE().getName().equals(w.getName())) {
 				return true;
 			}
@@ -101,7 +101,7 @@ public class Board {
 	}
 	
 	/*
-	 * Déplace tous les éléments joués puis renvoi un booléen pour indiquer si la partie est gagnée.
+	 * Dï¿½place tous les ï¿½lï¿½ments jouï¿½s puis renvoi un boolï¿½en pour indiquer si la partie est gagnï¿½e.
 	 */
 	public boolean moveElements(KeyboardKey direction) {
 		ArrayList<Element> elements = playedElements();
@@ -113,9 +113,9 @@ public class Board {
 					previousPosition[0] = i;
 					previousPosition[1] = j;
 					int[] newPosition = translateDirection(direction, previousPosition);
-					// Si obstacle ou autre impossibilité de se déplacer : mettre les conditions et vérifications ici (avant le déplacement)
+					// Si obstacle ou autre impossibilitï¿½ de se dï¿½placer : mettre les conditions et vï¿½rifications ici (avant le dï¿½placement)
 					if (win(board[newPosition[0]][newPosition[1]])) {
-						return true; // Partie gagnée
+						return true; // Partie gagnï¿½e
 					}
 					board[newPosition[0]][newPosition[1]] = board[i][j];
 				}

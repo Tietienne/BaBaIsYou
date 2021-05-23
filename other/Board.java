@@ -14,24 +14,17 @@ public class Board {
 	private int height;
 	private ArrayList<Rules> rules;
 	
-	public Board(List<List<List<Word>>> board, int length, int height, List<Rules> list) {
+	public Board(List<List<List<Word>>> board, List<Rules> list) {
 		Objects.requireNonNull(board);
-		Objects.requireNonNull(length);
-		Objects.requireNonNull(height);
 		Objects.requireNonNull(list);
 		
-		/*if (board.length!=height) {
-			throw new IllegalArgumentException("Le nombre de lignes du plateau n'est pas �gal au nombre de lignes donn� !");
-		}
-		for (int i=0; i<board.length; i++) {
-			if (board[i].length!=length) {
-				throw new IllegalArgumentException("Le nombre de colonnes du plateau n'est pas �gal au nombre de colonnes donn� !");
-			}
-		}*/
+		if(board.size() == 0 || board.get(0).size() == 0)
+			throw new IllegalArgumentException();
+		
 		
 		this.board = board;
-		this.length = length;
-		this.height = height;
+		this.length = board.size();
+		this.height = board.get(0).size();
 		this.rules = (ArrayList<Rules>) list;
 	}
 	

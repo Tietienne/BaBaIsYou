@@ -1,7 +1,6 @@
 package other;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import fr.umlv.zen5.KeyboardKey;
@@ -9,12 +8,12 @@ import word.Element;
 import word.Word;
 
 public class Board {
-	private List<List<List<Word>>> board;
+	private final ArrayList<ArrayList<ArrayList<Word>>> board;
 	private int length;
 	private int height;
-	private ArrayList<Rules> rules;
+	private final ArrayList<Rules> rules;
 	
-	public Board(List<List<List<Word>>> board, List<Rules> list) {
+	public Board(ArrayList<ArrayList<ArrayList<Word>>> board, ArrayList<Rules> list) {
 		Objects.requireNonNull(board);
 		Objects.requireNonNull(list);
 		
@@ -25,7 +24,7 @@ public class Board {
 		this.board = board;
 		this.length = board.size();
 		this.height = board.get(0).size();
-		this.rules = (ArrayList<Rules>) list;
+		this.rules = list;
 	}
 	
 	public boolean isOver() {
@@ -40,8 +39,10 @@ public class Board {
 	private boolean elementExists(Element e) {
 		for (int i=0;i<height;i++) {
 			for (int j=0;j<length;j++) {
-				if (board[i][j].getName().equals(e.getName())) {
-					return true;
+				for (Word w : board.get(i).get(j)) {
+					if (w.getName().equals(e.getName())) {
+						return true;
+					}
 				}
 			}
 		}
@@ -75,22 +76,29 @@ public class Board {
 		int[] newPosition = new int[2];
 		switch (direction) {
 			case UP : newPosition[0] = Math.max(0, previousPosition[0]-1); newPosition[1] = previousPosition[1]; break;
-			case DOWN : newPosition[0] = Math.min(board.length-1, previousPosition[0]+1); newPosition[1] = previousPosition[1]; break;
+			case DOWN : newPosition[0] = Math.min(board.size()-1, previousPosition[0]+1); newPosition[1] = previousPosition[1]; break;
 			case LEFT : newPosition[1] = Math.max(0, previousPosition[1]-1); newPosition[0] = previousPosition[0]; break;
-			case RIGHT : newPosition[1] = Math.min(board[0].length-1, previousPosition[1]+1); newPosition[0] = previousPosition[0]; break;
+			case RIGHT : newPosition[1] = Math.min(board.get(0).size()-1, previousPosition[1]+1); newPosition[0] = previousPosition[0]; break;
 			default : throw new IllegalArgumentException("Mauvaise touche prise en compte !");
 		}
 		return newPosition;
 	}
 	
-	private boolean win(Word w) {
+	private boolean win(ArrayList<Word> words) {
 		for (Rules r : rules) {
 			// Si on a la rï¿½gle gagnante : on vï¿½rifie si le mot sur lequel on va arriver en fait partie
-			if (r.isWin() && r.getE().getName().equals(w.getName())) {
-				return true;
+			for (Word w : words) {	
+				if (r.isWin() && r.getE().getName().equals(w.getName())) {
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+	
+	private void changeWordPlace(Word w, ArrayList<Word> previous, ArrayList<Word> next) {
+		previous.remove(w);
+		next.add(w);
 	}
 	
 	/*
@@ -100,17 +108,20 @@ public class Board {
 		ArrayList<Element> elements = playedElements();
 		for (int i=0;i<height;i++) {
 			for (int j=0;j<length;j++) {
-				if (elements.contains(board[i][j])) {
-					// Move element from position [i][j]
-					int[] previousPosition = new int[2];
-					previousPosition[0] = i;
-					previousPosition[1] = j;
-					int[] newPosition = translateDirection(direction, previousPosition);
-					// Si obstacle ou autre impossibilitï¿½ de se dï¿½placer : mettre les conditions et vï¿½rifications ici (avant le dï¿½placement)
-					if (win(board[newPosition[0]][newPosition[1]])) {
-						return true; // Partie gagnï¿½e
+				for (Word w : board.get(i).get(j)) {
+					if (elements.contains(w)) {
+						// Move element from position [i][j]
+						int[] previousPosition = new int[2];
+						previousPosition[0] = i;
+						previousPosition[1] = j;
+						int[] newPosition = translateDirection(direction, previousPosition);
+						// Si obstacle ou autre impossibilitï¿½ de se dï¿½placer : mettre les conditions et vï¿½rifications ici (avant le dï¿½placement)
+						if (win(board.get(newPosition[0]).get(newPosition[1]))) {
+							return true; // Partie gagnï¿½e
+						}
+						// Déplacement
+						changeWordPlace(w, board.get(i).get(j), board.get(newPosition[0]).get(newPosition[1]));
 					}
-					board[newPosition[0]][newPosition[1]] = board[i][j];
 				}
 			}
 		}

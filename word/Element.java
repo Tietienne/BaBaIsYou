@@ -1,9 +1,11 @@
 package word;
 
+import wordEnum.ElementEnum;
+
 public class Element extends Word {
 
-	public Element(String name) {
-		super(name);
+	public Element(ElementEnum name) {
+		super(name.toString());
 	}
 
 }

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import word.Word;
 
@@ -15,8 +14,8 @@ public class Lecture {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		
-		List<List<List<Word>>> board = new ArrayList<>();
-		List<Rules> list = new ArrayList<>();
+		ArrayList<ArrayList<ArrayList<Word>>> board = new ArrayList<>();
+		ArrayList<Rules> rules = new ArrayList<>();
 		
 		
 		while((line = br.readLine()) != null) {
@@ -32,7 +31,7 @@ public class Lecture {
 		}
 		br.close();
 		
-		return new Board(board, list);
+		return new Board(board, rules);
 	}	
 }
 

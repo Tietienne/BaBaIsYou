@@ -1,9 +1,11 @@
 package word;
 
+import wordEnum.PropertyEnum;
+
 public class Property extends Word {
 
-	public Property(String name) {
-		super(name);
+	public Property(PropertyEnum name) {
+		super(name.toString());
 	}
 
 }

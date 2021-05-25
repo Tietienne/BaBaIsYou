@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import word.Block;
+import word.BoardElem;
 
 public class Lecture {
 	public static Board fileToBoard(String level) throws IOException {
@@ -14,7 +14,7 @@ public class Lecture {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		
-		ArrayList<ArrayList<ArrayList<Block>>> board = new ArrayList<>();
+		ArrayList<ArrayList<ArrayList<BoardElem>>> board = new ArrayList<>();
 		ArrayList<Rules> rules = new ArrayList<>();
 		
 		

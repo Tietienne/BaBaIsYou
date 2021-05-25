@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import fr.umlv.zen5.KeyboardKey;
-import word.Element;
-import word.Block;
+import word.Name;
+import word.BoardElem;
 
 public class Board {
-	private final ArrayList<ArrayList<ArrayList<Block>>> board;
+	private final ArrayList<ArrayList<ArrayList<BoardElem>>> board;
 	private int length;
 	private int height;
 	private final ArrayList<Rules> rules;
 	
-	public Board(ArrayList<ArrayList<ArrayList<Block>>> board, ArrayList<Rules> list) {
-		Objects.requireNonNull(board);
-		Objects.requireNonNull(list);
+	public Board(ArrayList<ArrayList<ArrayList<BoardElem>>> board, ArrayList<Rules> list) {
+		Objects.requireNonNull(board, "Le plateau ne peut pas être null");
+		Objects.requireNonNull(list, "La liste des règles ne peut pas être nul");
 		
 		if(board.size() == 0 || board.get(0).size() == 0)
 			throw new IllegalArgumentException();
@@ -29,18 +29,18 @@ public class Board {
 	
 	public boolean isOver() {
 		for (Rules r : rules) {
-			if (r.isYou() && elementExists(r.getE())) {
+			if (r.isYou() && elementExists(r.getN())) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	private boolean elementExists(Element e) {
+	private boolean elementExists(Name e) {
 		for (int i=0;i<height;i++) {
 			for (int j=0;j<length;j++) {
-				for (Block w : board.get(i).get(j)) {
-					if (w instanceof Element && w.getName().equals(e.getName())) {
+				for (BoardElem be : board.get(i).get(j)) {
+					if (be.equals(e)) {
 						return true;
 					}
 				}
@@ -53,20 +53,20 @@ public class Board {
 		rules.add(r);
 	}
 	
-	public boolean isDisabled(Element e) {
+	public boolean isDisabled(Name e) {
 		for (Rules r : rules) {
-			if (r.getE().getName().equals(e.getName())) {
+			if (r.getN().equals(e)) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	private ArrayList<Element> playedElements() {
-		ArrayList<Element> played = new ArrayList<>();
+	private ArrayList<Name> playedElements() {
+		ArrayList<Name> played = new ArrayList<>();
 		for (Rules r : rules) {
-			if (r.isYou() && elementExists(r.getE())) {
-				played.add(r.getE());
+			if (r.isYou() && elementExists(r.getN())) {
+				played.add(r.getN());
 			}
 		}
 		return played;
@@ -84,11 +84,11 @@ public class Board {
 		return newPosition;
 	}
 	
-	private boolean win(ArrayList<Block> words) {
+	private boolean win(ArrayList<BoardElem> words) {
 		for (Rules r : rules) {
 			// Si on a la rï¿½gle gagnante : on vï¿½rifie si le mot sur lequel on va arriver en fait partie
-			for (Block w : words) {	
-				if (r.isWin() && w instanceof Element && r.getE().getName().equals(w.getName())) {
+			for (BoardElem w : words) {	
+				if (r.isWin() && r.getN().equals(w)) {
 					return true;
 				}
 			}
@@ -96,7 +96,7 @@ public class Board {
 		return false;
 	}
 	
-	private void changeWordPlace(Block w, ArrayList<Block> previous, ArrayList<Block> next) {
+	private void changeWordPlace(BoardElem w, ArrayList<BoardElem> previous, ArrayList<BoardElem> next) {
 		previous.remove(w);
 		next.add(w);
 	}
@@ -105,11 +105,11 @@ public class Board {
 	 * Dï¿½place tous les ï¿½lï¿½ments jouï¿½s puis renvoi un boolï¿½en pour indiquer si la partie est gagnï¿½e.
 	 */
 	public boolean moveElements(KeyboardKey direction) {
-		ArrayList<Element> elements = playedElements();
+		ArrayList<Name> elements = playedElements();
 		for (int i=0;i<height;i++) {
 			for (int j=0;j<length;j++) {
-				for (Block w : board.get(i).get(j)) {
-					if (w instanceof Element && elements.contains(w)) {
+				for (BoardElem w : board.get(i).get(j)) {
+					if (elements.contains(w)) {
 						// Move element from position [i][j]
 						int[] previousPosition = new int[2];
 						previousPosition[0] = i;

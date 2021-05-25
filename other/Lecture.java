@@ -6,14 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import word.Element;
-import word.Operator;
-import word.Property;
-import word.Word;
-import wordEnum.ElementEnum;
-import wordEnum.OperatorEnum;
-import wordEnum.PropertyEnum;
-import wordEnum.WordEnum;
+import word.Block;
 
 public class Lecture {
 	public static void fileToBoard(String level) throws IOException {
@@ -23,7 +16,7 @@ public class Lecture {
 		WordEnum word = null;
 		int cpt = 0;
 		
-		ArrayList<ArrayList<ArrayList<Word>>> board = new ArrayList<>();
+		ArrayList<ArrayList<ArrayList<Block>>> board = new ArrayList<>();
 		ArrayList<Rules> rules = new ArrayList<>();
 		
 		

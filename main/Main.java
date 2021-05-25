@@ -55,6 +55,6 @@ public class Main {
 		// Fin du jeu / du programme
 		
 		// ---- //*/
-		Lecture.fileToBoard("src/level1.txt");
+		Lecture.fileToBoard("level1.txt");
 	}
 }

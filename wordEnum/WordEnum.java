@@ -18,10 +18,20 @@ public enum WordEnum {
 	Baba('B', TypeEnum.Element, "Baba"),
 	Flag('F', TypeEnum.Element, "Flag"),
 	Wall('W', TypeEnum.Element, "Wall"),
-	Water('~', TypeEnum.Element, "Water"),
+	Water('A', TypeEnum.Element, "Water"),
 	Skull('&', TypeEnum.Element, "Skull"),
 	Lava('L', TypeEnum.Element, "Lava"),
-	Rock('R', TypeEnum.Element, "Rock");
+	Rock('R', TypeEnum.Element, "Rock"),
+	
+	//Bloc
+	baba('b', TypeEnum.Block, "baba"),
+	flag('f', TypeEnum.Block, "flag"),
+	rock('r', TypeEnum.Block, "rock"),
+	wall('w', TypeEnum.Block, "wall"),
+	water('~', TypeEnum.Block, "water"),
+	skull('s', TypeEnum.Block, "skull"),
+	lava('l', TypeEnum.Block, "lava");
+	
 	
 	private final char fileStr;
 	private final TypeEnum type;

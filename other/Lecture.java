@@ -7,9 +7,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import word.Block;
+import word.Element;
+import word.Operator;
+import word.Property;
+import wordEnum.BlockEnum;
+import wordEnum.ElementEnum;
+import wordEnum.OperatorEnum;
+import wordEnum.PropertyEnum;
+import wordEnum.WordEnum;
 
 public class Lecture {
-	public static void fileToBoard(String level) throws IOException {
+	public static Board fileToBoard(String level) throws IOException {
 		File file = new File(level);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
@@ -28,25 +36,22 @@ public class Lecture {
 					if(wordenum.getFileStr() == line.charAt(i))
 						word = wordenum;
 				};
-				switch(word.getType()) {
-				case Element : board.get(cpt).get(i).add(new Element(ElementEnum.valueOf(word.getBoardStr())));
-				case Operator : board.get(cpt).get(i).add(new Operator(OperatorEnum.valueOf(word.getBoardStr())));
-				case Property : board.get(cpt).get(i).add(new Property(PropertyEnum.valueOf(word.getBoardStr())));
-				default: // add Block
-					break;
+				if(word != null) {
+					switch(word.getType()) {
+					case Element : board.get(cpt).get(i).add(new Element(ElementEnum.valueOf(word.getBoardStr())));
+					case Operator : board.get(cpt).get(i).add(new Operator(OperatorEnum.valueOf(word.getBoardStr())));
+					case Property : board.get(cpt).get(i).add(new Property(PropertyEnum.valueOf(word.getBoardStr())));
+					case Block: board.get(cpt).get(i).add(new Block(String.valueOf(word.getBoardStr())));
+						break;
+					}
 				}
-				
-//				if(line.charAt(i) == 'v')
-//					System.out.print(" ");
-//				else
-//					System.out.print(line.charAt(i));
 			}
 			System.out.println("");
-			cpt += 1;
+			cpt++;
 		}
 		br.close();
 		
-		//return new Board(board, rules);
+		return new Board(board, rules);
 	}	
 }
 

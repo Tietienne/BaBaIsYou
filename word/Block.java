@@ -1,5 +1,7 @@
 package word;
 
+import wordEnum.BlockEnum;
+
 public class Block {
 	private final String name;
 	

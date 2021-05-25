@@ -5,15 +5,15 @@ import java.util.Objects;
 
 import fr.umlv.zen5.KeyboardKey;
 import word.Element;
-import word.Word;
+import word.Block;
 
 public class Board {
-	private final ArrayList<ArrayList<ArrayList<Word>>> board;
+	private final ArrayList<ArrayList<ArrayList<Block>>> board;
 	private int length;
 	private int height;
 	private final ArrayList<Rules> rules;
 	
-	public Board(ArrayList<ArrayList<ArrayList<Word>>> board, ArrayList<Rules> list) {
+	public Board(ArrayList<ArrayList<ArrayList<Block>>> board, ArrayList<Rules> list) {
 		Objects.requireNonNull(board);
 		Objects.requireNonNull(list);
 		
@@ -39,8 +39,8 @@ public class Board {
 	private boolean elementExists(Element e) {
 		for (int i=0;i<height;i++) {
 			for (int j=0;j<length;j++) {
-				for (Word w : board.get(i).get(j)) {
-					if (w.getName().equals(e.getName())) {
+				for (Block w : board.get(i).get(j)) {
+					if (w instanceof Element && w.getName().equals(e.getName())) {
 						return true;
 					}
 				}
@@ -84,11 +84,11 @@ public class Board {
 		return newPosition;
 	}
 	
-	private boolean win(ArrayList<Word> words) {
+	private boolean win(ArrayList<Block> words) {
 		for (Rules r : rules) {
 			// Si on a la r�gle gagnante : on v�rifie si le mot sur lequel on va arriver en fait partie
-			for (Word w : words) {	
-				if (r.isWin() && r.getE().getName().equals(w.getName())) {
+			for (Block w : words) {	
+				if (r.isWin() && w instanceof Element && r.getE().getName().equals(w.getName())) {
 					return true;
 				}
 			}
@@ -96,7 +96,7 @@ public class Board {
 		return false;
 	}
 	
-	private void changeWordPlace(Word w, ArrayList<Word> previous, ArrayList<Word> next) {
+	private void changeWordPlace(Block w, ArrayList<Block> previous, ArrayList<Block> next) {
 		previous.remove(w);
 		next.add(w);
 	}
@@ -108,8 +108,8 @@ public class Board {
 		ArrayList<Element> elements = playedElements();
 		for (int i=0;i<height;i++) {
 			for (int j=0;j<length;j++) {
-				for (Word w : board.get(i).get(j)) {
-					if (elements.contains(w)) {
+				for (Block w : board.get(i).get(j)) {
+					if (w instanceof Element && elements.contains(w)) {
 						// Move element from position [i][j]
 						int[] previousPosition = new int[2];
 						previousPosition[0] = i;

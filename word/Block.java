@@ -1,9 +1,9 @@
 package word;
 
-public abstract class Word {
+public class Block {
 	private final String name;
 	
-	public Word(String name) {
+	public Block(String name) {
 		this.name = name;
 	}
 	

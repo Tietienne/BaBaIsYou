@@ -25,10 +25,11 @@ public class Lecture {
 		WordEnum word = null;
 		int cpt = 0;
 
-		ArrayList<BoardElem>[][] board = new ArrayList[24][24];
+		ArrayList<ArrayList<ArrayList<BoardElem>>> board = new ArrayList<>();
 		for (int i = 0; i < 24; i++) {
+			board.add(new ArrayList<>());
 			for (int j = 0; j < 24; j++)
-				board[i][j] = new ArrayList<BoardElem>();
+				board.get(i).add(new ArrayList<BoardElem>());
 		}
 
 		ArrayList<Rules> rules = new ArrayList<>();
@@ -45,15 +46,15 @@ public class Lecture {
 				if (word != null) {
 					switch (word.getType()) {
 					case Name:
-						board[cpt - 1][i - 1].add(new Name(NameEnum.valueOf(word.getBoardStr()))); break;
+						board.get(cpt - 1).get(i - 1).add(new Name(NameEnum.valueOf(word.getBoardStr()))); break;
 					case Operator:
-						board[cpt - 1][i - 1].add(new Operator(OperatorEnum.valueOf(word.getBoardStr()))); break;
+						board.get(cpt - 1).get(i - 1).add(new Operator(OperatorEnum.valueOf(word.getBoardStr()))); break;
 					case Property:
-						board[cpt - 1][i - 1].add(new Property(PropertyEnum.valueOf(word.getBoardStr()))); break;
+						board.get(cpt - 1).get(i - 1).add(new Property(PropertyEnum.valueOf(word.getBoardStr()))); break;
 					case PlayableElem:
-						board[cpt - 1][i - 1].add(new PlayableElem(PlayableEnum.valueOf(word.getBoardStr()))); break;
+						board.get(cpt - 1).get(i - 1).add(new PlayableElem(PlayableEnum.valueOf(word.getBoardStr()))); break;
 					default: 
-						board[cpt - 1][i - 1].add(null); break;
+						board.get(cpt - 1).get(i - 1).add(null); break;
 					}
 				}
 				word = null;

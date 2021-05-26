@@ -8,12 +8,12 @@ import word.Name;
 import word.BoardElem;
 
 public class Board {
-	private final ArrayList<BoardElem>[][] board;
+	private final ArrayList<ArrayList<ArrayList<BoardElem>>> board;
 	private int length;
 	private int height;
 	private final ArrayList<Rules> rules;
 	
-	public Board(ArrayList<BoardElem>[][] board, ArrayList<Rules> list, int lenght, int height) {
+	public Board(ArrayList<ArrayList<ArrayList<BoardElem>>> board, ArrayList<Rules> list, int lenght, int height) {
 		Objects.requireNonNull(board, "Le plateau ne peut pas �tre null");
 		Objects.requireNonNull(list, "La liste des r�gles ne peut pas �tre nul");
 		

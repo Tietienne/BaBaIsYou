@@ -43,7 +43,7 @@ public class Board {
 		this.height = height;
 	}
 
-	public ArrayList<BoardElem>[][] getBoard() {
+	public ArrayList<ArrayList<ArrayList<BoardElem>>> getBoard() {
 		return board;
 	}
 

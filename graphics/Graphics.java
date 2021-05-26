@@ -15,7 +15,7 @@ public class Graphics {
 		int height = board.getHeight();
 		for(int i = 0; i < length; i++) {
 			for(int j = 0; j < height; i++)
-				System.out.print(board.getBoard()[i][j].get(i));
+				System.out.print(board.getBoard().get(i).get(j));
 			System.out.println("");
 		}
 	}

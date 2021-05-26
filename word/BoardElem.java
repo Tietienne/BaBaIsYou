@@ -6,14 +6,19 @@ public abstract class BoardElem {
 	private final String name;
 	
 	public BoardElem(String name) {
-		Objects.requireNonNull(name, "Le nom de l'élément du jeu ne peut pas être null");
+		Objects.requireNonNull(name, "Le nom de l'ï¿½lï¿½ment du jeu ne peut pas ï¿½tre null");
 		this.name = name;
 	}
 	
 	public String getName() {
 		return name;
 	}
-	
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof BoardElem)) {

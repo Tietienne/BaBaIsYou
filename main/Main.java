@@ -59,10 +59,9 @@ public class Main {
 		
 		// ---- //*/
 		board = Lecture.fileToBoard("level1.txt");
-		System.out.println(board.getBoard().get(0).get(0));
-		BoardElem new_board = board.getBoard().get(0).get(0).get(0);
-		System.out.println(new_board);
-//		Graphics graph = new Graphics(board);
-//		graph.printBoard();
+//		BoardElem new_board = board.getBoard().get(12).get(8).get(0);
+//		System.out.println(new_board);
+		Graphics graph = new Graphics(board);
+		graph.printBoard();
 	}
 }

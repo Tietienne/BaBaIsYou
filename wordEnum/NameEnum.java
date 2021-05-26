@@ -1,6 +1,6 @@
 package wordEnum;
 
-public enum ElementEnum {
+public enum NameEnum {
 	Baba,
 	Flag,
 	Wall,

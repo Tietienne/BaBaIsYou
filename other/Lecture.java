@@ -7,14 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import word.Block;
-import word.Element;
 import word.Operator;
-import word.Property;
+import word.Element;
 import wordEnum.BlockEnum;
+import word.Property;
 import wordEnum.ElementEnum;
 import wordEnum.OperatorEnum;
-import wordEnum.PropertyEnum;
 import wordEnum.WordEnum;
+import wordEnum.PropertyEnum;
 
 public class Lecture {
 	public static Board fileToBoard(String level) throws IOException {
@@ -24,7 +24,7 @@ public class Lecture {
 		WordEnum word = null;
 		int cpt = 0;
 		
-		ArrayList<ArrayList<ArrayList<Block>>> board = new ArrayList<>();
+		ArrayList<ArrayList<ArrayList<BoardElem>>> board = new ArrayList<>();
 		ArrayList<Rules> rules = new ArrayList<>();
 		
 		

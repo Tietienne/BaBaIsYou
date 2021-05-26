@@ -1,16 +1,16 @@
 package word;
 
-import wordEnum.OperatorEnum;
+import wordEnum.NameEnum;
 
-public class Operator extends BoardElem {
+public class Name extends BoardElem {
 
-	public Operator(OperatorEnum name) {
+	public Name(NameEnum name) {
 		super(name.toString());
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Operator)) {
+		if (!(obj instanceof Name)) {
 			return false;
 		}
 		return super.equals(obj);

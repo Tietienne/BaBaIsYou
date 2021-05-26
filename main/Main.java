@@ -11,12 +11,14 @@ import java.io.IOException;
 //import fr.umlv.zen5.Event.Action;
 //import word.Word;
 //import other.Rules;
-
+import graphics.Graphics;
+import other.Board;
 import other.Lecture;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
+		Board board;
 		/*// Initialisation du niveau
 		Board b = new Board(new Word[0][0], 0, 0, new ArrayList<Rules>()); // A remplacer !!! --> Fait perdre la partie instantan�ment
 		// ---- //
@@ -55,6 +57,8 @@ public class Main {
 		// Fin du jeu / du programme
 		
 		// ---- //*/
-		Lecture.fileToBoard("src/level1.txt");
+		board = Lecture.fileToBoard("level1.txt");
+		Graphics graph = new Graphics(board);
+		graph.printBoard();
 	}
 }

@@ -27,6 +27,30 @@ public class Board {
 		this.rules = list;
 	}
 	
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public ArrayList<BoardElem>[][] getBoard() {
+		return board;
+	}
+
+	public ArrayList<Rules> getRules() {
+		return rules;
+	}
+
 	public boolean isOver() {
 		for (Rules r : rules) {
 			if (r.isYou() && elementExists(r.getN())) {

@@ -42,7 +42,6 @@ public class Lecture {
 					if (wordenum.getFileStr() == line.charAt(i))
 						word = wordenum;
 				}
-				System.out.print(word+ " ");
 				if (word != null) {
 					switch (word.getType()) {
 					case Name:
@@ -60,7 +59,6 @@ public class Lecture {
 				word = null;
 
 			}
-			System.out.println("");
 			cpt++;
 		}
 		br.close();

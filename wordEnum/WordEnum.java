@@ -15,22 +15,23 @@ public enum WordEnum {
 	Is('I', TypeEnum.Operator, "Is"),
 	
 	//Element
-	Baba('B', TypeEnum.Element, "Baba"),
-	Flag('F', TypeEnum.Element, "Flag"),
-	Wall('W', TypeEnum.Element, "Wall"),
-	Water('A', TypeEnum.Element, "Water"),
-	Skull('&', TypeEnum.Element, "Skull"),
-	Lava('L', TypeEnum.Element, "Lava"),
-	Rock('R', TypeEnum.Element, "Rock"),
+	Baba('B', TypeEnum.Name, "Baba"),
+	Flag('F', TypeEnum.Name, "Flag"),
+	Wall('W', TypeEnum.Name, "Wall"),
+	Water('A', TypeEnum.Name, "Water"),
+	Skull('&', TypeEnum.Name, "Skull"),
+	Lava('L', TypeEnum.Name, "Lava"),
+	Rock('R', TypeEnum.Name, "Rock"),
 	
 	//Bloc
-	baba('b', TypeEnum.Block, "baba"),
-	flag('f', TypeEnum.Block, "flag"),
-	rock('r', TypeEnum.Block, "rock"),
-	wall('w', TypeEnum.Block, "wall"),
-	water('~', TypeEnum.Block, "water"),
-	skull('s', TypeEnum.Block, "skull"),
-	lava('l', TypeEnum.Block, "lava");
+	baba('b', TypeEnum.PlayableElem, "baba"),
+	flag('d', TypeEnum.PlayableElem, "flag"),
+	rock('r', TypeEnum.PlayableElem, "rock"),
+	wall('w', TypeEnum.PlayableElem, "wall"),
+	water('~', TypeEnum.PlayableElem, "water"),
+	skull('s', TypeEnum.PlayableElem, "skull"),
+	lava('l', TypeEnum.PlayableElem, "lava"),
+	floor('f', TypeEnum.PlayableElem, "floor");
 	
 	
 	private final char fileStr;

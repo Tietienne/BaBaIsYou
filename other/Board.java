@@ -8,22 +8,22 @@ import word.Name;
 import word.BoardElem;
 
 public class Board {
-	private final ArrayList<ArrayList<ArrayList<BoardElem>>> board;
+	private final ArrayList<BoardElem>[][] board;
 	private int length;
 	private int height;
 	private final ArrayList<Rules> rules;
 	
-	public Board(ArrayList<ArrayList<ArrayList<BoardElem>>> board, ArrayList<Rules> list) {
-		Objects.requireNonNull(board, "Le plateau ne peut pas être null");
-		Objects.requireNonNull(list, "La liste des règles ne peut pas être nul");
+	public Board(ArrayList<BoardElem>[][] board, ArrayList<Rules> list, int lenght, int height) {
+		Objects.requireNonNull(board, "Le plateau ne peut pas ï¿½tre null");
+		Objects.requireNonNull(list, "La liste des rï¿½gles ne peut pas ï¿½tre nul");
 		
-		if(board.size() == 0 || board.get(0).size() == 0)
+		if(lenght == 0 || height == 0)
 			throw new IllegalArgumentException();
 		
 		
 		this.board = board;
-		this.length = board.size();
-		this.height = board.get(0).size();
+		this.length = lenght;
+		this.height = height;
 		this.rules = list;
 	}
 	
@@ -119,7 +119,7 @@ public class Board {
 						if (win(board.get(newPosition[0]).get(newPosition[1]))) {
 							return true; // Partie gagnï¿½e
 						}
-						// Déplacement
+						// Dï¿½placement
 						changeWordPlace(w, board.get(i).get(j), board.get(newPosition[0]).get(newPosition[1]));
 					}
 				}

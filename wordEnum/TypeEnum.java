@@ -1,8 +1,8 @@
 package wordEnum;
 
 public enum TypeEnum {
-	Element,
+	Name,
 	Property,
 	Operator,
-	Block;
+	PlayableElem;
 }

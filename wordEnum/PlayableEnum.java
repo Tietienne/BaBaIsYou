@@ -1,11 +1,12 @@
 package wordEnum;
 
-public enum BlockEnum {
+public enum PlayableEnum {
 	baba,
 	flag,
 	rock,
 	wall,
 	water,
 	skull,
-	lava;
+	lava,
+	floor;
 }

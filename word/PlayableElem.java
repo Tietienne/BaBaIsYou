@@ -1,10 +1,10 @@
 package word;
 
-import wordEnum.NameEnum;
+import wordEnum.PlayableEnum;
 
 public class PlayableElem extends BoardElem {
 
-	public PlayableElem(NameEnum name) {
+	public PlayableElem(PlayableEnum name) {
 		super(name.toString());
 	}
 	

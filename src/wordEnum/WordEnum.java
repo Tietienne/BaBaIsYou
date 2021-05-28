@@ -9,7 +9,7 @@ public enum WordEnum {
 	Melt('M', TypeEnum.Property, "Melt"),
 	Hot('H', TypeEnum.Property, "Hot"),
 	Defeat('D', TypeEnum.Property, "Defeat"),
-	Sink('S', TypeEnum.Property, "Sink"),
+	Sink('s', TypeEnum.Property, "Sink"),
 	
 	//Operator
 	Is('I', TypeEnum.Operator, "Is"),

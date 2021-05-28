@@ -1,27 +1,25 @@
 package main;
 
-//import java.awt.Color;
-//import java.awt.geom.Rectangle2D;
+import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-//import java.util.ArrayList;
-//
-//import fr.umlv.zen5.Application;
-//import fr.umlv.zen5.Event;
-//import fr.umlv.zen5.ScreenInfo;
-//import fr.umlv.zen5.Event.Action;
-//import word.Word;
-//import other.Rules;
+
+import fr.umlv.zen5.Application;
+import fr.umlv.zen5.Event;
+import fr.umlv.zen5.Event.Action;
+import fr.umlv.zen5.ScreenInfo;
+
 import graphics.Graphics;
 import other.Board;
 import other.Lecture;
-import word.BoardElem;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		Board board;
-		/*// Initialisation du niveau
-		Board b = new Board(new Word[0][0], 0, 0, new ArrayList<Rules>()); // A remplacer !!! --> Fait perdre la partie instantan�ment
+		// Initialisation du niveau
+		Board board = Lecture.fileToBoard("levels/level1.txt");
+		Graphics graph = new Graphics(board);
+		//graph.printBoard();
 		// ---- //
 		
 	    Application.run(Color.ORANGE, context -> {
@@ -33,12 +31,19 @@ public class Main {
 	        System.out.println("size of the screen (" + width + " x " + height + ")");
 	        
 	        context.renderFrame(graphics -> {
-	          graphics.setColor(Color.ORANGE);
-	          graphics.fill(new  Rectangle2D.Float(0, 0, width, height));
-	        });
+		          graphics.setColor(Color.ORANGE);
+		          graphics.fill(new Rectangle2D.Float(0, 0, width, height));
+		        });
+	        
+	        try {
+	        	graph.drawBoard(context, board, width, height);
+				board.drawBoard(graph, context, width, height);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	        
 			// Boucle du jeu tant que le joueur n'a pas perdu.
-			while (!b.isOver()) {
+			while (board.isOver()) {
 	          Event event = context.pollOrWaitEvent(10);
 	          if (event == null) {  // no event
 	            continue;
@@ -52,16 +57,8 @@ public class Main {
 	          }
 	          System.out.println(event);
 	        }
+			graph.printBoard();
 			context.exit(0);
 	      });
-		
-		// Fin du jeu / du programme
-		
-		// ---- //*/
-		board = Lecture.fileToBoard("level1.txt");
-//		BoardElem new_board = board.getBoard().get(12).get(8).get(0);
-//		System.out.println(new_board);
-		Graphics graph = new Graphics(board);
-		graph.printBoard();
 	}
 }

@@ -2,22 +2,26 @@ package other;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.KeyboardKey;
 import graphics.Graphics;
 import word.Name;
+import word.Operator;
+import word.Property;
+import wordEnum.OperatorEnum;
+import wordEnum.PropertyEnum;
 import word.BoardElem;
 
 public class Board {
 	private final ArrayList<BoardElem> board[];
 	private final int lineLength;
-	private final ArrayList<Rules> rules;
+	private final HashMap<BoardElem, ArrayList<Property>> rules = new HashMap<>();
 	
-	public Board(ArrayList<BoardElem> board[], ArrayList<Rules> list, int lineLength) {
+	public Board(ArrayList<BoardElem> board[], int lineLength) {
 		Objects.requireNonNull(board, "Le plateau ne peut pas ï¿½tre null");
-		Objects.requireNonNull(list, "La liste des rï¿½gles ne peut pas ï¿½tre nul");
 		
 		if(lineLength == 0)
 			throw new IllegalArgumentException();
@@ -25,7 +29,17 @@ public class Board {
 		
 		this.board = board;
 		this.lineLength = lineLength;
-		this.rules = list;
+		initProperties();
+	}
+	
+	public void printRules() {
+		for (BoardElem be : rules.keySet()) {
+			System.out.print(be+" : ");
+			for (Property p : rules.get(be)) {
+				System.out.print(p+ " ");
+			}
+			System.out.println();
+		}
 	}
 	
 	public int getLength() {
@@ -40,7 +54,7 @@ public class Board {
 		return board;
 	}
 
-	public ArrayList<Rules> getRules() {
+	public HashMap<BoardElem, ArrayList<Property>> getRules() {
 		return rules;
 	}
 	
@@ -49,15 +63,17 @@ public class Board {
 	}
 
 	public boolean isOver() {
-		for (Rules r : rules) {
-			if (r.isYou() && elementExists(r.getN())) {
-				return false;
+		for (BoardElem be : rules.keySet()) {
+			for (Property p : rules.get(be)) {
+				if (p.equals(new Property(PropertyEnum.You)) && elementExists(be)) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 	
-	private boolean elementExists(Name e) {
+	private boolean elementExists(BoardElem e) {
 		for (int i=0; i<board.length; i++) {
 			for (BoardElem be : board[i]) {
 				if (be.equals(e)) {
@@ -68,24 +84,17 @@ public class Board {
 		return false;
 	}
 	
-	public void addRule(Rules r) {
-		rules.add(r);
+	public boolean isDisabled(BoardElem be) {
+		return rules.get(be).size()==0;
 	}
 	
-	public boolean isDisabled(Name e) {
-		for (Rules r : rules) {
-			if (r.getN().equals(e)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	private ArrayList<Name> playedElements() {
-		ArrayList<Name> played = new ArrayList<>();
-		for (Rules r : rules) {
-			if (r.isYou() && elementExists(r.getN())) {
-				played.add(r.getN());
+	private ArrayList<BoardElem> playedElements() {
+		ArrayList<BoardElem> played = new ArrayList<>();
+		for (BoardElem be : rules.keySet()) {
+			for (Property p : rules.get(be)) {
+				if (p.equals(new Property(PropertyEnum.You)) && elementExists(be)) {
+					played.add(be);
+				}
 			}
 		}
 		return played;
@@ -104,12 +113,9 @@ public class Board {
 //	}
 	
 	private boolean win(ArrayList<BoardElem> words) {
-		for (Rules r : rules) {
-			// Si on a la rï¿½gle gagnante : on vï¿½rifie si le mot sur lequel on va arriver en fait partie
-			for (BoardElem w : words) {	
-				if (r.isWin() && r.getN().equals(w)) {
-					return true;
-				}
+		for (BoardElem be : words) {
+			if (rules.get(be).contains(new Property(PropertyEnum.Win))) {
+				return true;
 			}
 		}
 		return false;
@@ -147,17 +153,121 @@ public class Board {
 //		return false;
 //	}
 	
+	private int[] getIndexAround(int index) {
+		int[] tab = new int[4]; // [UP, RIGHT, DOWN, LEFT]
+		tab[0] = index-lineLength<0 ? null : index-lineLength;
+		tab[1] = index%lineLength==0 ? null : index-1;
+		tab[2] = index+lineLength>board.length ? null : index+lineLength;
+		tab[3] = index%lineLength==lineLength-1 ? null : index+1;
+		return tab;
+	}
+	
+	private void insertProperties(ArrayList<Property> list, Property... properties) {
+		for (Property p : properties) {
+			if (p!=null && !(list.contains(p))) {
+				list.add(p);
+			}
+		}
+	}
+	
+	private Property checkColumnUp(int index) {
+		if (index-lineLength>=0) {
+			for (BoardElem be : board[index-lineLength]) {
+				if (be.equals(new Operator(OperatorEnum.Is))) {
+					if (index-lineLength-lineLength>=0) {
+						for (BoardElem be2 : board[index-lineLength-lineLength]) {
+							if (be2 instanceof Property) {
+								return (Property) be2;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private Property checkColumnDown(int index) {
+		if (index+lineLength<board.length) {
+			for (BoardElem be : board[index+lineLength]) {
+				if (be.equals(new Operator(OperatorEnum.Is))) {
+					if (index+lineLength+lineLength<board.length) {
+						for (BoardElem be2 : board[index+lineLength+lineLength]) {
+							if (be2 instanceof Property) {
+								return (Property) be2;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private Property checkLineLeft(int index) {
+		if (index-1>=0) {
+			for (BoardElem be : board[index-1]) {
+				if (be.equals(new Operator(OperatorEnum.Is))) {
+					if (index-1-1>=0) {
+						for (BoardElem be2 : board[index-1-1]) {
+							if (be2 instanceof Property) {
+								return (Property) be2;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private Property checkLineRight(int index) {
+		if (index+1<board.length) {
+			for (BoardElem be : board[index+1]) {
+				if (be.equals(new Operator(OperatorEnum.Is))) {
+					if (index+1+1<board.length) {
+						for (BoardElem be2 : board[index+1+1]) {
+							if (be2 instanceof Property) {
+								return (Property) be2;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	private Property[] checkProperties(int index) {
+		Property[] properties = new Property[4];
+		Objects.checkIndex(index, board.length);
+		properties[0] = checkColumnUp(index);
+		properties[1] = checkLineRight(index);
+		properties[2] = checkColumnDown(index);
+		properties[3] = checkLineLeft(index);
+		return properties;
+	}
+	
 	private void initProperties() {
-		
+		for (int i=0; i<board.length; i++) {
+			for (BoardElem be : board[i]) {
+				if (be instanceof Name) {
+					Property[] properties = checkProperties(i);
+					var l = rules.get(be);
+					ArrayList<Property> list = l!=null ? l : new ArrayList<>();
+					insertProperties(list, properties);
+					rules.put(be, list);
+				}
+			}
+		}
 	}
 	
 	public void drawBoard(Graphics graph, ApplicationContext context, float width, float height) throws IOException {
 		for (int i=0; i<board.length; i++) {
 			for (BoardElem be : board[i]) {
-				System.out.println(be.toString()+" Numéro : "+i+" x : "+i/lineLength+" y : "+i%lineLength);
 				graph.drawImage(context, this, width, height, i/lineLength+1, i%lineLength+1, be);
 			}
-		}
-		
+		}	
 	}
 }

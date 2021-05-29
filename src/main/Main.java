@@ -19,6 +19,7 @@ public class Main {
 		// Initialisation du niveau
 		Board board = Lecture.fileToBoard("levels/level1.txt");
 		Graphics graph = new Graphics(board);
+		board.printRules();
 		//graph.printBoard();
 		// ---- //
 		
@@ -43,7 +44,7 @@ public class Main {
 			}
 	        
 			// Boucle du jeu tant que le joueur n'a pas perdu.
-			while (board.isOver()) {
+			while (!board.isOver()) {
 	          Event event = context.pollOrWaitEvent(10);
 	          if (event == null) {  // no event
 	            continue;
@@ -57,7 +58,7 @@ public class Main {
 	          }
 	          System.out.println(event);
 	        }
-			graph.printBoard();
+			//graph.printBoard();
 			context.exit(0);
 	      });
 	}

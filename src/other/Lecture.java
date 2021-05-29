@@ -31,8 +31,6 @@ public class Lecture {
 			board[i] = new ArrayList<BoardElem>();
 		}
 
-		ArrayList<Rules> rules = new ArrayList<>();
-
 		while ((line = br.readLine()) != null) {
 
 			for (int i = 0; i < line.length(); i++) {
@@ -62,6 +60,6 @@ public class Lecture {
 		}
 		br.close();
 
-		return new Board(board, rules, 24);
+		return new Board(board, 24);
 	}
 }

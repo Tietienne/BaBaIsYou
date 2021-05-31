@@ -1,12 +1,13 @@
 package main;
 
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import fr.umlv.zen5.Application;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.Event.Action;
+import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 
 import graphics.Graphics;
@@ -19,7 +20,12 @@ public class Main {
 		// Initialisation du niveau
 		Board board = Lecture.fileToBoard("levels/level1.txt");
 		Graphics graph = new Graphics(board);
-		board.printRules();
+		ArrayList<KeyboardKey> pressableKeys = new ArrayList<>();
+		pressableKeys.add(KeyboardKey.UP);
+		pressableKeys.add(KeyboardKey.DOWN);
+		pressableKeys.add(KeyboardKey.LEFT);
+		pressableKeys.add(KeyboardKey.RIGHT);
+		//board.printRules();
 		//graph.printBoard();
 		// ---- //
 		
@@ -30,11 +36,6 @@ public class Main {
 	        float width = screenInfo.getWidth();
 	        float height = screenInfo.getHeight();
 	        System.out.println("size of the screen (" + width + " x " + height + ")");
-	        
-	        context.renderFrame(graphics -> {
-		          graphics.setColor(Color.ORANGE);
-		          graphics.fill(new Rectangle2D.Float(0, 0, width, height));
-		        });
 	        
 	        try {
 	        	graph.drawBoard(context, board, width, height);
@@ -51,14 +52,24 @@ public class Main {
 	          }
 	          Action action = event.getAction();
 	          // Aprï¿½s avoir rï¿½cupï¿½rï¿½ l'action : on fait avancer le jeu comme on le souhaite
-	          if (action == Action.KEY_PRESSED || action == Action.KEY_RELEASED) {
-	            System.out.println("abort abort !");
-	            context.exit(0);
-	            return;
+	          if (action == Action.KEY_PRESSED) {
+	        	 if (pressableKeys.contains(event.getKey())) {
+	        		 board.moveElements(event.getKey());
+	        		 try {
+	        			graph.drawBoard(context, board, width, height);
+						board.drawBoard(graph, context, width, height);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	        	 }
+	        	 if (event.getKey().equals(KeyboardKey.UNDEFINED)) {
+	     			System.out.println("abort abort !");
+	    			context.exit(0);
+	        	 }
 	          }
-	          System.out.println(event);
 	        }
 			//graph.printBoard();
+			System.out.println("Partie terminée !");
 			context.exit(0);
 	      });
 	}

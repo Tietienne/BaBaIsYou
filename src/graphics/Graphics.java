@@ -1,6 +1,7 @@
 package graphics;
 
 import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,11 @@ public class Graphics {
 		int widthCase = (int) (width/column);
 		int lengthCase = (int) (height/line);
 		context.renderFrame(graphics -> {
+			// Couleur du fond
+	        graphics.setColor(Color.ORANGE);
+	        graphics.fill(new Rectangle2D.Float(0, 0, width, height));
+	        
+	        // Quadrillage
 			graphics.setColor(Color.BLACK);
 			for (int i=0; i<column; i++) {
 				graphics.drawLine(i*widthCase, 0, i*widthCase, (int) height);

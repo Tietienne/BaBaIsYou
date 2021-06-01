@@ -3,6 +3,7 @@ package other;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import fr.umlv.zen5.ApplicationContext;
@@ -31,6 +32,8 @@ public class Board {
 		this.column = column;
 		this.line = line;
 		initProperties();
+		this.lineLength = lineLength;
+		updateProperties();
 	}
 
 	public int getColumn() {
@@ -100,7 +103,7 @@ public class Board {
 		}
 		return played;
 	}
-
+	
 //	private int[] translateDirection(KeyboardKey direction, int[] previousPosition) {
 //		int[] newPosition = new int[2];
 //		switch (direction) {
@@ -112,21 +115,21 @@ public class Board {
 //		}
 //		return newPosition;
 //	}
-
+	
 	private boolean win(ArrayList<BoardElem> words) {
 		for (BoardElem be : words) {
-			if (rules.get(be).contains(new Property(PropertyEnum.Win))) {
+			if (rules.getOrDefault(be, new ArrayList<Property>()).contains(new Property(PropertyEnum.Win))) {
 				return true;
 			}
 		}
 		return false;
 	}
-
+	
 	private void changeWordPlace(BoardElem w, ArrayList<BoardElem> previous, ArrayList<BoardElem> next) {
 		previous.remove(w);
 		next.add(w);
 	}
-
+	
 	/*
 	 * D�place tous les �l�ments jou�s puis renvoi un bool�en pour indiquer si la
 	 * partie est gagn�e.
@@ -154,7 +157,7 @@ public class Board {
 //		}
 //		return false;
 //	}
-
+	
 	private int[] getIndexAround(int index) {
 		int[] tab = new int[4]; // [UP, RIGHT, DOWN, LEFT]
 		tab[0] = index - line < 0 ? null : index - line;
@@ -249,16 +252,16 @@ public class Board {
 		properties[3] = checkLineLeft(index);
 		return properties;
 	}
-
+	
 	private void initProperties() {
-		for (int i = 0; i < board.length; i++) {
+		for (int i=0; i<board.length; i++) {
 			for (BoardElem be : board[i]) {
 				if (be instanceof Name) {
 					Property[] properties = checkProperties(i);
 					var l = rules.get(be);
 					ArrayList<Property> list = l != null ? l : new ArrayList<>();
 					insertProperties(list, properties);
-					rules.put(be, list);
+					rules.put(((Name) be).equivalent(), list);
 				}
 			}
 		}

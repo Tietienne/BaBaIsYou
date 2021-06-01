@@ -1,11 +1,21 @@
 package word;
 
 import wordEnum.NameEnum;
+import wordEnum.PlayableEnum;
 
 public class Name extends BoardElem {
 
 	public Name(NameEnum name) {
 		super(name.toString());
+	}
+	
+	private String justName() {
+		String s = getName();
+		return s.split("_")[0].toLowerCase();
+	}
+	
+	public PlayableElem equivalent() {
+		return new PlayableElem(PlayableEnum.valueOf(justName()));
 	}
 	
 	@Override

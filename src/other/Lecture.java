@@ -24,42 +24,64 @@ public class Lecture {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		WordEnum word = null;
-		int cpt = 0;
-
-		ArrayList<BoardElem> board[] = new ArrayList[24*24];
-		for (int i = 0; i < 24*24; i++) {
-			board[i] = new ArrayList<BoardElem>();
-		}
+		int cpt = 0, height = 0, width = 0;
+		ArrayList<BoardElem> board[] = null;
+		System.out.println("start");
 
 		while ((line = br.readLine()) != null) {
+			if (cpt == 0) {
+				StringBuilder sWidth = new StringBuilder();
+				sWidth.append(line.charAt(0)).append(line.charAt(1));
+				width = Integer.parseInt(sWidth.toString());
 
-			for (int i = 0; i < line.length(); i++) {
+				StringBuilder sHeight = new StringBuilder();
+				sHeight.append(line.charAt(3)).append(line.charAt(4));
+				height = Integer.parseInt(sHeight.toString());
 
-				for (WordEnum wordenum : WordEnum.values()) {
-					if (wordenum.getFileStr() == line.charAt(i))
-						word = wordenum;
+				board = new ArrayList[height * width];
+				for (int i = 0; i < width * height; i++) {
+					board[i] = new ArrayList<BoardElem>();
 				}
-				if (word != null) {
-					switch (word.getType()) {
-					case Name:
-						board[cpt - 1+(i - 1)*24].add(new Name(NameEnum.valueOf(word.getBoardStr()))); break;
-					case Operator:
-						board[cpt - 1+(i - 1)*24].add(new Operator(OperatorEnum.valueOf(word.getBoardStr()))); break;
-					case Property:
-						board[cpt - 1+(i - 1)*24].add(new Property(PropertyEnum.valueOf(word.getBoardStr()))); break;
-					case PlayableElem:
-						board[cpt - 1+(i - 1)*24].add(new PlayableElem(PlayableEnum.valueOf(word.getBoardStr()))); break;
-					default: 
-						board[cpt - 1+(i - 1)*24].add(null); break;
+			}
+
+			else {
+
+				for (int i = 0; i < line.length(); i++) {
+
+					for (WordEnum wordenum : WordEnum.values()) {
+						if (wordenum.getFileStr() == line.charAt(i)) {
+							word = wordenum;
+						}
 					}
-				}
-				word = null;
 
+					if (word != null) {
+						switch (word.getType()) {
+						case Name:
+							board[(cpt - 1) * width + i].add(new Name(NameEnum.valueOf(word.getBoardStr())));
+							break;
+						case Operator:
+							board[(cpt - 1) * width + i].add(new Operator(OperatorEnum.valueOf(word.getBoardStr())));
+							break;
+						case Property:
+							board[(cpt - 1) * width + i].add(new Property(PropertyEnum.valueOf(word.getBoardStr())));
+							break;
+						case PlayableElem:
+							board[(cpt - 1) * width + i]
+									.add(new PlayableElem(PlayableEnum.valueOf(word.getBoardStr())));
+							break;
+						default:
+							board[(cpt - 1) * width + i].add(new PlayableElem(PlayableEnum.valueOf(null)));
+							break;
+						}
+					}
+					word = null;
+
+				}
 			}
 			cpt++;
 		}
 		br.close();
 
-		return new Board(board, 24);
+		return new Board(board, height, width);
 	}
 }

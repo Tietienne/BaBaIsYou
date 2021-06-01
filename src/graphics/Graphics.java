@@ -13,50 +13,48 @@ import word.BoardElem;
 
 public class Graphics {
 	private final Board board;
-	
+
 	public Graphics(Board board) {
 		this.board = board;
 	}
-	
+
 	public void printBoard() {
-		int length = board.getLength();
-		int height = board.getHeight();
-		for(int i = 0; i < length; i++) {
-			for(int j = 0; j < height; j++) {
-				if(board.getElems(i, j).size() > 0)
+		int line = board.getLine();
+		int column = board.getColumn();
+		for (int i = 0; i < line; i++) {
+			for (int j = 0; j < column; j++) {
+				if (board.getElems(i, j).size() > 0)
 					System.out.print(board.getElems(i, j).get(0) + " ");
 				else
-					System.out.print("   ");
+					System.out.print("(" + i + " " + j + ") ");
 			}
 			System.out.println("|");
 		}
 	}
-	
+
 	public void drawBoard(ApplicationContext context, Board b, float width, float height) {
-		int column = b.getLength();
-		int line = b.getHeight();
-		int widthCase = (int) (width/column);
-		int lengthCase = (int) (height/line);
+		int column = b.getColumn();
+		int heigthCase = (int) (width / column);
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.BLACK);
-			for (int i=0; i<column; i++) {
-				graphics.drawLine(i*widthCase, 0, i*widthCase, (int) height);
-			}
-			for (int j=0; j<line; j++) {
-				graphics.drawLine(0, j*lengthCase, (int) width, j*lengthCase);
-			}
+			for (int i = 0; i < column + 1; i++)
+				graphics.drawLine(0, i * heigthCase, (int) width, i * heigthCase);
+			for (int i = 0; i < column + 1; i++)
+				graphics.drawLine(i * heigthCase, 0, i * heigthCase, (int) height);
+
 		});
 	}
-	
-	public void drawImage(ApplicationContext context, Board b, float width, float height, int i, int j, BoardElem be) throws IOException {
-		int column = b.getLength();
-		int line = b.getHeight();
-		int widthCase = (int) (width/column);
-		int lengthCase = (int) (height/line);
-		File file = new File("pictures/"+be.toString()+".gif");
+
+	public void drawImage(ApplicationContext context, Board b, float width, float height, int i, int j, BoardElem be)
+			throws IOException {
+		int line = b.getLine();
+		int column = b.getColumn();
+		int mid_height = (int) (height - 24 * line) / 2;
+		int mid_width = (int) (width - 24 * column) / 2;
+		File file = new File("pictures/" + be.toString() + ".gif");
 		BufferedImage img = ImageIO.read(file);
 		context.renderFrame(graphics -> {
-			graphics.drawImage(img, i*widthCase+widthCase/3, j*lengthCase+lengthCase/3, null);
+			graphics.drawImage(img, mid_width + i * 24, mid_height + j * 24, null);
 		});
 	}
 }

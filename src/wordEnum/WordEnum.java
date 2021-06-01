@@ -31,7 +31,8 @@ public enum WordEnum {
 	water('~', TypeEnum.PlayableElem, "water"),
 	skull('s', TypeEnum.PlayableElem, "skull"),
 	lava('l', TypeEnum.PlayableElem, "lava"),
-	floor('f', TypeEnum.PlayableElem, "floor");
+	floor('f', TypeEnum.PlayableElem, "floor"),
+	empty('v', TypeEnum.PlayableElem, "empty");
 	
 	
 	private final char fileStr;

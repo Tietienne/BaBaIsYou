@@ -71,7 +71,7 @@ public class Main {
 				}
 			}
 			//graph.printBoard();
-			System.out.println("Partie terminée !");
+			System.out.println("Partie terminï¿½e !");
 			context.exit(0);
 	    });
 	}

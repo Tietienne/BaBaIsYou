@@ -25,7 +25,7 @@ public class Board {
 		Objects.requireNonNull(board, "Le plateau ne peut pas ï¿½tre null");
 		
 		if(lineLength == 0 || board.length == 0)
-			throw new IllegalArgumentException("Les lignes ou les colonnes ne peuvent pas être null.");
+			throw new IllegalArgumentException("Les lignes ou les colonnes ne peuvent pas ï¿½tre null.");
 		
 		
 		this.board = board;
@@ -91,7 +91,7 @@ public class Board {
 	
 	private ArrayList<BoardElem> playedElements() {
 		ArrayList<BoardElem> played = new ArrayList<>();
-		for (BoardElem be : rules.keySet()) {
+		for  (BoardElem be : rules.keySet()) {
 			for (Property p : rules.get(be)) {
 				if (p.equals(new Property(PropertyEnum.You)) && elementExists(be)) {
 					played.add(be);
@@ -154,7 +154,7 @@ public class Board {
 					if (win(board[newPosition])) {
 						return true; // Partie gagnï¿½e
 					}
-					// Dï¿½placement à faire : on garde en mémoire
+					// Dï¿½placement ï¿½ faire : on garde en mï¿½moire
 					keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
 				}
 			}
@@ -276,7 +276,7 @@ public class Board {
 	public void drawBoard(Graphics graph, ApplicationContext context, float width, float height) throws IOException {
 		for (int i = 0; i < board.length; i++) {
 			for (BoardElem be : board[i]) {
-				graph.drawImage(context, this, width, height, i % (board.length/lineLength), i / (board.length/lineLength), be);
+				graph.drawImage(context, this, width, height, i % getColumn(), i / getColumn(), be);
 			}
 		}
 	}

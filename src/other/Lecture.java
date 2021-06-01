@@ -82,6 +82,6 @@ public class Lecture {
 		}
 		br.close();
 
-		return new Board(board, height, width);
+		return new Board(board, width);
 	}
 }

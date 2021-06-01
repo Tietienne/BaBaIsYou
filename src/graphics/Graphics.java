@@ -13,13 +13,7 @@ import other.Board;
 import word.BoardElem;
 
 public class Graphics {
-	private final Board board;
-
-	public Graphics(Board board) {
-		this.board = board;
-	}
-
-	public void printBoard() {
+	public void printBoard(Board board) {
 		int line = board.getLine();
 		int column = board.getColumn();
 		for (int i = 0; i < line; i++) {
@@ -34,20 +28,10 @@ public class Graphics {
 	}
 
 	public void drawBoard(ApplicationContext context, Board b, float width, float height) {
-		int column = b.getColumn();
-		int heigthCase = (int) (width / column);
 		context.renderFrame(graphics -> {
 			// Couleur du fond
-	        graphics.setColor(Color.ORANGE);
+	        graphics.setColor(Color.BLACK);
 	        graphics.fill(new Rectangle2D.Float(0, 0, width, height));
-	        
-	        // Quadrillage
-			graphics.setColor(Color.BLACK);
-			for (int i = 0; i < column + 1; i++)
-				graphics.drawLine(0, i * heigthCase, (int) width, i * heigthCase);
-			for (int i = 0; i < column + 1; i++)
-				graphics.drawLine(i * heigthCase, 0, i * heigthCase, (int) height);
-
 		});
 	}
 

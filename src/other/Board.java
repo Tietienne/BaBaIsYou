@@ -11,6 +11,7 @@ import fr.umlv.zen5.KeyboardKey;
 import graphics.Graphics;
 import word.Name;
 import word.Operator;
+import word.PlayableElem;
 import word.Property;
 import wordEnum.OperatorEnum;
 import wordEnum.PropertyEnum;
@@ -85,8 +86,17 @@ public class Board {
 		return false;
 	}
 	
+	private boolean isPushable(BoardElem be) {
+		List<Property> r = rules.get(be);
+		if (r==null) {
+			return !(be instanceof PlayableElem);
+		}
+		return r.contains(new Property(PropertyEnum.Push)) || r.contains(new Property(PropertyEnum.You)) || !(be instanceof PlayableElem);
+	}
+	
 	public boolean isDisabled(BoardElem be) {
-		return rules.get(be).size()==0;
+		List<Property> r = rules.get(be);
+		return (r==null || r.equals(new ArrayList<Property>())) && be instanceof PlayableElem;
 	}
 	
 	private ArrayList<BoardElem> playedElements() {
@@ -104,10 +114,10 @@ public class Board {
 	private int translateDirection(KeyboardKey direction, int previousPosition) {
 		int newPosition;
 		switch (direction) {
-			case UP : newPosition = previousPosition%lineLength==0 ? previousPosition : previousPosition-1; break;
-			case DOWN : newPosition = previousPosition%lineLength==lineLength-1 ? previousPosition : previousPosition+1; break;
-			case LEFT : newPosition = Math.max(0, previousPosition-lineLength); break;
-			case RIGHT : newPosition = Math.min(board.length, previousPosition+lineLength); break;
+			case UP : newPosition = Math.max(0, previousPosition-lineLength); break;
+			case DOWN : newPosition = Math.min(board.length-1, previousPosition+lineLength); break;
+			case LEFT : newPosition = previousPosition%lineLength==0 ? previousPosition : previousPosition-1; break;
+			case RIGHT : newPosition = previousPosition%lineLength==lineLength-1 ? previousPosition : previousPosition+1; break;
 			default : throw new IllegalArgumentException("Mauvaise touche prise en compte !");
 		}
 		return newPosition;
@@ -127,6 +137,7 @@ public class Board {
 			BoardElem toMove = toMoveElem.get(i);
 			board[toMovePrevPos.get(i)].remove(toMove);
 			board[toMoveNextPos.get(i)].add(toMove);
+			System.out.println(board[toMoveNextPos.get(i)]);
 		}
 	}
 	
@@ -135,6 +146,31 @@ public class Board {
 		toMoveElem.add(be);
 		toMovePrevPos.add(previousPosition);
 		toMoveNextPos.add(nextPosition);
+	}
+	
+	private boolean checkMoveRec(KeyboardKey direction, BoardElem w, int i, ArrayList<BoardElem> toMoveElem, ArrayList<Integer> toMovePrevPos,
+			ArrayList<Integer> toMoveNextPos) {
+		int newPosition = translateDirection(direction, i);
+
+		for (BoardElem be : board[newPosition]) {
+			if (!isDisabled(be)) {
+				if (!isPushable(be)) {
+					return false;
+				} else { // Elément actif ET poussable
+					// Si obstacle ou autre impossibilitï¿½ de se dï¿½placer : mettre les conditions et vï¿½rifications ici (avant le dï¿½placement)
+					if (checkMoveRec(direction, be, newPosition, toMoveElem, toMovePrevPos, toMoveNextPos)) {
+						// Dï¿½placement ï¿½ faire : on garde en mï¿½moire
+						keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
+						return true;
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+		// Pas d'éléments en direction du déplacement
+		keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
+		return true;
 	}
 	
 	/*
@@ -150,16 +186,15 @@ public class Board {
 				if (elements.contains(w)) {
 					// Move element from position [i][j]
 					int newPosition = translateDirection(direction, i);
-					// Si obstacle ou autre impossibilitï¿½ de se dï¿½placer : mettre les conditions et vï¿½rifications ici (avant le dï¿½placement)
-					if (win(board[newPosition])) {
+					if (win(board[newPosition])) { // Refaire une méthode win propre !!!
 						return true; // Partie gagnï¿½e
 					}
-					// Dï¿½placement ï¿½ faire : on garde en mï¿½moire
-					keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
+					checkMoveRec(direction, w, i, toMoveElem, toMovePrevPos, toMoveNextPos);
 				}
 			}
 		}
 		changeWordsPlace(toMoveElem, toMovePrevPos, toMoveNextPos);
+		updateProperties();
 		return false;
 	}
 	

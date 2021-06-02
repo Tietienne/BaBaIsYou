@@ -56,7 +56,10 @@ public class Main {
 				// Aprï¿½s avoir rï¿½cupï¿½rï¿½ l'action : on fait avancer le jeu comme on le souhaite
 				if (action == Action.KEY_PRESSED) {
 					if (pressableKeys.contains(event.getKey())) {
-						board.moveElements(event.getKey());
+						if (board.moveElements(event.getKey())) {
+							System.out.println("Partie gagnée !");
+							context.exit(0);
+						}
 						try {
 							graph.drawBoard(context, board, width, height);
 							board.drawBoard(graph, context, width, height);

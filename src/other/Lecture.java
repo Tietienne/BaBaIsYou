@@ -70,7 +70,7 @@ public class Lecture {
 									.add(new PlayableElem(PlayableEnum.valueOf(word.getBoardStr())));
 							break;
 						default:
-							board[(cpt - 1) * width + i].add(new PlayableElem(PlayableEnum.valueOf(null)));
+							board[(cpt - 1) * width + i].add(null);
 							break;
 						}
 					}

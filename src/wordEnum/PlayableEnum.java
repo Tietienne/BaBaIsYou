@@ -9,9 +9,8 @@ public enum PlayableEnum {
 	water("Water_Play"),
 	skull("Skull_Play"),
 	lava("Lava_Play"),
-	rock("Rock_Play"),
-	floor("Floor_Play"),
-	empty("Empty_Play");
+	rock("Rock_Play"), 
+	floor("Floor_Play");
 	
 	
 	private final String file_name;

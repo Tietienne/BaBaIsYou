@@ -118,7 +118,8 @@ public class Board {
 			newPosition = previousPosition / lineLength == 0 ? previousPosition : previousPosition - lineLength;
 			break;
 		case DOWN:
-			newPosition = previousPosition / lineLength == getLine() - 1? previousPosition : previousPosition + lineLength;
+			newPosition = previousPosition / lineLength == getLine() - 1 ? previousPosition
+					: previousPosition + lineLength;
 			break;
 		case LEFT:
 			newPosition = previousPosition % lineLength == 0 ? previousPosition : previousPosition - 1;
@@ -129,6 +130,7 @@ public class Board {
 		default:
 			throw new IllegalArgumentException("Mauvaise touche prise en compte !");
 		}
+		System.out.println(newPosition);
 		return newPosition;
 	}
 
@@ -161,7 +163,8 @@ public class Board {
 			ArrayList<Integer> toMovePrevPos, ArrayList<Integer> toMoveNextPos) {
 		int newPosition = translateDirection(direction, i);
 		try {
-			if(i == newPosition) return false;
+			if (i == newPosition)
+				return false;
 			for (BoardElem be : board[newPosition]) {
 				if (!isDisabled(be)) {
 					if (!isPushable(be)) {
@@ -181,46 +184,16 @@ public class Board {
 			}
 			// Pas d'�l�ments en direction du d�placement
 			keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
+		} catch (StackOverflowError e) {
+			System.out.println(newPosition);
+			e.printStackTrace();
+			return false;
 		}
 		catch(StackOverflowError e){
+				System.out.println(newPosition);
 				return false;
 			}
 		return true;
-	}
-	
-	
-	private boolean moveElementsUpLeft(List<BoardElem> elements, KeyboardKey direction, ArrayList<BoardElem> toMoveElem,
-			ArrayList<Integer> toMovePrevPos, ArrayList<Integer> toMoveNextPos) {
-		for (int i = 0; i < board.length; i++) {
-			for (BoardElem w : board[i]) {
-				if (elements.contains(w)) {
-					// Move element from position [i][j]
-					int newPosition = translateDirection(direction, i);
-					if (win(board[newPosition])) { // Refaire une m�thode win propre !!!
-						return true; // Partie gagn�e
-					}
-					checkMoveRec(direction, w, i, toMoveElem, toMovePrevPos, toMoveNextPos);
-				}
-			}
-		}
-		return false;
-	}
-	
-	private boolean moveElementsDownRight(List<BoardElem> elements, KeyboardKey direction, ArrayList<BoardElem> toMoveElem,
-			ArrayList<Integer> toMovePrevPos, ArrayList<Integer> toMoveNextPos) {
-		for (int i = board.length-1; i >= 0; i--) {
-			for (BoardElem w : board[i]) {
-				if (elements.contains(w)) {
-					// Move element from position [i][j]
-					int newPosition = translateDirection(direction, i);
-					if (win(board[newPosition])) { // Refaire une m�thode win propre !!!
-						return true; // Partie gagn�e
-					}
-					checkMoveRec(direction, w, i, toMoveElem, toMovePrevPos, toMoveNextPos);
-				}
-			}
-		}
-		return false;
 	}
 
 	/*
@@ -232,13 +205,29 @@ public class Board {
 		ArrayList<BoardElem> toMoveElem = new ArrayList<>();
 		ArrayList<Integer> toMovePrevPos = new ArrayList<>();
 		ArrayList<Integer> toMoveNextPos = new ArrayList<>();
-		if (direction.equals(KeyboardKey.DOWN) || direction.equals(KeyboardKey.RIGHT)) {
-			if (moveElementsDownRight(elements, direction, toMoveElem, toMovePrevPos, toMoveNextPos)) {
-				return true;
+		for (int i = 0; i < board.length; i++) {
+			for (BoardElem w : board[i]) {
+				if (elements.contains(w)) {
+					// Move element from position [i][j]
+					int newPosition = translateDirection(direction, i);
+					if (win(board[newPosition])) { // Refaire une m�thode win propre !!!
+						return true; // Partie gagn�e
+					}
+				}
 			}
-		} else {
-			if (moveElementsUpLeft(elements, direction, toMoveElem, toMovePrevPos, toMoveNextPos)) {
-				return true;
+		} 
+		else {
+			for (int i = 0; i < board.length; i++) {
+				for (BoardElem w : board[i]) {
+					if (elements.contains(w)) {
+						// Move element from position [i][j]
+						int newPosition = translateDirection(direction, i);
+						if (win(board[newPosition])) { // Refaire une m�thode win propre !!!
+							return true; // Partie gagn�e
+						}
+						checkMoveRec(direction, w, i, toMoveElem, toMovePrevPos, toMoveNextPos);
+					}
+				}
 			}
 		}
 		changeWordsPlace(toMoveElem, toMovePrevPos, toMoveNextPos);

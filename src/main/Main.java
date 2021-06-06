@@ -38,7 +38,6 @@ public class Main {
 			System.out.println("size of the screen (" + width + " x " + height + ")");
 
 			context.renderFrame(graphics -> {
-				graph.drawBoard(graphics, board, width, height);
 				try {
 					board.drawBoard(graph, graphics, width, height);
 				} catch (IOException e) {
@@ -61,8 +60,8 @@ public class Main {
 							context.exit(0);
 						}
 						context.renderFrame(graphics -> {
-							graph.drawBoard(graphics, board, width, height);
 							try {
+								graph.drawBoard(graphics, board, width, height);
 								board.drawBoard(graph, graphics, width, height);
 							} catch (IOException e) {
 								e.printStackTrace();

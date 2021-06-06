@@ -113,7 +113,6 @@ public class Board {
 
 	private int translateDirection(KeyboardKey direction, int previousPosition) {
 		int newPosition;
-		System.out.println(lineLength + " " + previousPosition / lineLength + " " + getLine() );
 		switch (direction) {
 		case UP:
 			newPosition = previousPosition / lineLength == 0 ? previousPosition : previousPosition - lineLength;
@@ -148,7 +147,6 @@ public class Board {
 			BoardElem toMove = toMoveElem.get(i);
 			board[toMovePrevPos.get(i)].remove(toMove);
 			board[toMoveNextPos.get(i)].add(toMove);
-			System.out.println(board[toMoveNextPos.get(i)]);
 		}
 	}
 
@@ -185,21 +183,14 @@ public class Board {
 			keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
 		}
 		catch(StackOverflowError e){
-				System.out.println(newPosition);
 				return false;
 			}
 		return true;
 	}
-
-	/*
-	 * D�place tous les �l�ments jou�s puis renvoi un bool�en pour indiquer si la
-	 * partie est gagn�e.
-	 */
-	public boolean moveElements(KeyboardKey direction) {
-		ArrayList<BoardElem> elements = playedElements();
-		ArrayList<BoardElem> toMoveElem = new ArrayList<>();
-		ArrayList<Integer> toMovePrevPos = new ArrayList<>();
-		ArrayList<Integer> toMoveNextPos = new ArrayList<>();
+	
+	
+	private boolean moveElementsUpLeft(List<BoardElem> elements, KeyboardKey direction, ArrayList<BoardElem> toMoveElem,
+			ArrayList<Integer> toMovePrevPos, ArrayList<Integer> toMoveNextPos) {
 		for (int i = 0; i < board.length; i++) {
 			for (BoardElem w : board[i]) {
 				if (elements.contains(w)) {
@@ -212,19 +203,48 @@ public class Board {
 				}
 			}
 		}
+		return false;
+	}
+	
+	private boolean moveElementsDownRight(List<BoardElem> elements, KeyboardKey direction, ArrayList<BoardElem> toMoveElem,
+			ArrayList<Integer> toMovePrevPos, ArrayList<Integer> toMoveNextPos) {
+		for (int i = board.length-1; i >= 0; i--) {
+			for (BoardElem w : board[i]) {
+				if (elements.contains(w)) {
+					// Move element from position [i][j]
+					int newPosition = translateDirection(direction, i);
+					if (win(board[newPosition])) { // Refaire une m�thode win propre !!!
+						return true; // Partie gagn�e
+					}
+					checkMoveRec(direction, w, i, toMoveElem, toMovePrevPos, toMoveNextPos);
+				}
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * D�place tous les �l�ments jou�s puis renvoi un bool�en pour indiquer si la
+	 * partie est gagn�e.
+	 */
+	public boolean moveElements(KeyboardKey direction) {
+		ArrayList<BoardElem> elements = playedElements();
+		ArrayList<BoardElem> toMoveElem = new ArrayList<>();
+		ArrayList<Integer> toMovePrevPos = new ArrayList<>();
+		ArrayList<Integer> toMoveNextPos = new ArrayList<>();
+		if (direction.equals(KeyboardKey.DOWN) || direction.equals(KeyboardKey.RIGHT)) {
+			if (moveElementsDownRight(elements, direction, toMoveElem, toMovePrevPos, toMoveNextPos)) {
+				return true;
+			}
+		} else {
+			if (moveElementsUpLeft(elements, direction, toMoveElem, toMovePrevPos, toMoveNextPos)) {
+				return true;
+			}
+		}
 		changeWordsPlace(toMoveElem, toMovePrevPos, toMoveNextPos);
 		updateProperties();
 		return false;
 	}
-
-//	private int[] getIndexAround(int index) {
-//		int[] tab = new int[4]; // [UP, RIGHT, DOWN, LEFT]
-//		tab[0] = index-lineLength<0 ? null : index-lineLength;
-//		tab[1] = index%lineLength==0 ? null : index-1;
-//		tab[2] = index+lineLength>board.length ? null : index+lineLength;
-//		tab[3] = index%lineLength==lineLength-1 ? null : index+1;
-//		return tab;
-//	}
 
 	private void insertProperties(ArrayList<Property> list, Property... properties) {
 		for (Property p : properties) {
@@ -233,25 +253,19 @@ public class Board {
 			}
 		}
 	}
-
-	private Property checkColumnUp(int index) {
-		if (index - lineLength >= 0) {
-			for (BoardElem be : board[index - lineLength]) {
-				if (be.equals(new Operator(OperatorEnum.Is))) {
-					if (index - lineLength - lineLength >= 0) {
-						for (BoardElem be2 : board[index - lineLength - lineLength]) {
-							if (be2 instanceof Property) {
-								return (Property) be2;
-							}
-						}
-					}
+	
+	private void transformElements(Name origin, Name toTransform) {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j<board[i].size(); j++) {
+				if (board[i].get(j).equals(origin.equivalent())) {
+					System.out.println("test");
+					board[i].set(j, toTransform.equivalent());
 				}
 			}
 		}
-		return null;
 	}
 
-	private Property checkColumnDown(int index) {
+	private Property checkColumnDown(int index, Name n) {
 		if (index + lineLength < board.length) {
 			for (BoardElem be : board[index + lineLength]) {
 				if (be.equals(new Operator(OperatorEnum.Is))) {
@@ -260,22 +274,8 @@ public class Board {
 							if (be2 instanceof Property) {
 								return (Property) be2;
 							}
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	private Property checkLineLeft(int index) {
-		if (index - 1 >= 0) {
-			for (BoardElem be : board[index - 1]) {
-				if (be.equals(new Operator(OperatorEnum.Is))) {
-					if (index - 1 - 1 >= 0) {
-						for (BoardElem be2 : board[index - 1 - 1]) {
-							if (be2 instanceof Property) {
-								return (Property) be2;
+							if (be2 instanceof Name) {
+								transformElements(n, (Name) be2);
 							}
 						}
 					}
@@ -285,7 +285,7 @@ public class Board {
 		return null;
 	}
 
-	private Property checkLineRight(int index) {
+	private Property checkLineRight(int index, Name n) {
 		if (index + 1 < board.length) {
 			for (BoardElem be : board[index + 1]) {
 				if (be.equals(new Operator(OperatorEnum.Is))) {
@@ -294,6 +294,9 @@ public class Board {
 							if (be2 instanceof Property) {
 								return (Property) be2;
 							}
+							if (be2 instanceof Name) {
+								transformElements(n, (Name) be2);
+							}
 						}
 					}
 				}
@@ -302,13 +305,11 @@ public class Board {
 		return null;
 	}
 
-	private Property[] checkProperties(int index) {
-		Property[] properties = new Property[4];
+	private Property[] checkProperties(int index, Name n) {
+		Property[] properties = new Property[2];
 		Objects.checkIndex(index, board.length);
-		properties[0] = checkColumnUp(index);
-		properties[1] = checkLineRight(index);
-		properties[2] = checkColumnDown(index);
-		properties[3] = checkLineLeft(index);
+		properties[0] = checkLineRight(index, n);
+		properties[1] = checkColumnDown(index, n);
 		return properties;
 	}
 
@@ -316,7 +317,7 @@ public class Board {
 		for (int i = 0; i < board.length; i++) {
 			for (BoardElem be : board[i]) {
 				if (be instanceof Name) {
-					Property[] properties = checkProperties(i);
+					Property[] properties = checkProperties(i, (Name) be);
 					var l = rules.get(be);
 					ArrayList<Property> list = l != null ? l : new ArrayList<>();
 					insertProperties(list, properties);

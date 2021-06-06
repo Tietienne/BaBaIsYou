@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import fr.umlv.zen5.ApplicationContext;
 import other.Board;
 import word.BoardElem;
 

@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,7 +95,7 @@ public class Board {
 				|| !(be instanceof PlayableElem);
 	}
 
-	public boolean isDisabled(BoardElem be) {
+	private boolean isDisabled(BoardElem be) {
 		List<Property> r = rules.get(be);
 		return (r == null || r.equals(new ArrayList<Property>())) && be instanceof PlayableElem;
 	}
@@ -110,6 +111,18 @@ public class Board {
 		}
 		return played;
 	}
+	
+	private ArrayList<BoardElem> winElements() {
+		ArrayList<BoardElem> winner = new ArrayList<>();
+		for (BoardElem be : rules.keySet()) {
+			for (Property p : rules.get(be)) {
+				if (p.equals(new Property(PropertyEnum.Win)) && elementExists(be)) {
+					winner.add(be);
+				}
+			}
+		}
+		return winner;
+	}
 
 	private int translateDirection(KeyboardKey direction, int previousPosition) {
 		int newPosition;
@@ -118,8 +131,7 @@ public class Board {
 			newPosition = previousPosition / lineLength == 0 ? previousPosition : previousPosition - lineLength;
 			break;
 		case DOWN:
-			newPosition = previousPosition / lineLength == getLine() - 1 ? previousPosition
-					: previousPosition + lineLength;
+			newPosition = previousPosition / lineLength == getLine() - 1? previousPosition : previousPosition + lineLength;
 			break;
 		case LEFT:
 			newPosition = previousPosition % lineLength == 0 ? previousPosition : previousPosition - 1;
@@ -130,11 +142,33 @@ public class Board {
 		default:
 			throw new IllegalArgumentException("Mauvaise touche prise en compte !");
 		}
-		System.out.println(newPosition);
 		return newPosition;
 	}
+	
+	public boolean isWin() {
+		ArrayList<BoardElem> player = playedElements();
+		ArrayList<BoardElem> winner = winElements();
+		boolean winP = false;
+		boolean winW = false;
+		for (int i = 0; i < board.length; i++) {
+			winP = false;
+			winW = false;
+			for (BoardElem be : board[i]) {
+				if (player.contains(be)) {
+					winP = true;
+				}
+				if (winner.contains(be)) {
+					winW = true;
+				}
+			}
+			if (winP && winW) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-	private boolean win(ArrayList<BoardElem> words) {
+	private boolean nextToWin(ArrayList<BoardElem> words) {
 		for (BoardElem be : words) {
 			if (rules.getOrDefault(be, new ArrayList<Property>()).contains(new Property(PropertyEnum.Win))) {
 				return true;
@@ -143,96 +177,72 @@ public class Board {
 		return false;
 	}
 
-	private void changeWordsPlace(List<BoardElem> toMoveElem, List<Integer> toMovePrevPos,
-			List<Integer> toMoveNextPos) {
-		for (int i = 0; i < toMoveElem.size(); i++) {
-			BoardElem toMove = toMoveElem.get(i);
-			board[toMovePrevPos.get(i)].remove(toMove);
-			board[toMoveNextPos.get(i)].add(toMove);
-		}
-	}
-
-	private void keepMemoryToMove(List<BoardElem> toMoveElem, List<Integer> toMovePrevPos, List<Integer> toMoveNextPos,
-			BoardElem be, int previousPosition, int nextPosition) {
-		toMoveElem.add(be);
-		toMovePrevPos.add(previousPosition);
-		toMoveNextPos.add(nextPosition);
-	}
-
-	private boolean checkMoveRec(KeyboardKey direction, BoardElem w, int i, ArrayList<BoardElem> toMoveElem,
-			ArrayList<Integer> toMovePrevPos, ArrayList<Integer> toMoveNextPos) {
+	private boolean checkMoveRec(KeyboardKey direction, BoardElem w, int i, Iterator<BoardElem> itPrev) {
 		int newPosition = translateDirection(direction, i);
 		try {
-			if (i == newPosition)
-				return false;
-			for (BoardElem be : board[newPosition]) {
+			if(i == newPosition) return false;
+			for (Iterator<BoardElem> it = board[newPosition].iterator(); it.hasNext();) {
+				BoardElem be = it.next();
 				if (!isDisabled(be)) {
 					if (!isPushable(be)) {
 						return false;
-					} else { // Elï¿½ment actif ET poussable
-						// Si obstacle ou autre impossibilitï¿½ de se dï¿½placer : mettre les conditions et
-						// vï¿½rifications ici (avant le dï¿½placement)
-						if (checkMoveRec(direction, be, newPosition, toMoveElem, toMovePrevPos, toMoveNextPos)) {
-							// Dï¿½placement ï¿½ faire : on garde en mï¿½moire
-							keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
-							return true;
-						} else {
-							return false;
-						}
+					}
+					// Elï¿½ment actif ET poussable
+					if (!checkMoveRec(direction, be, newPosition, it)) {
+						// Déplacement impossible : on renvoit false
+						return false;
 					}
 				}
 			}
-			// Pas d'ï¿½lï¿½ments en direction du dï¿½placement
-			keepMemoryToMove(toMoveElem, toMovePrevPos, toMoveNextPos, w, i, newPosition);
-		} catch (StackOverflowError e) {
-			System.out.println(newPosition);
-			e.printStackTrace();
+			itPrev.remove();
+			board[newPosition].add(w);
+		} catch(StackOverflowError e) {
 			return false;
 		}
-		catch(StackOverflowError e){
-				System.out.println(newPosition);
-				return false;
-			}
 		return true;
+	}
+	
+	private void moveIterator(List<BoardElem> elements, KeyboardKey direction, int i) {
+		for (Iterator<BoardElem> it = board[i].iterator(); it.hasNext();) {
+			BoardElem be = it.next();
+			if (elements.contains(be)) {
+				// Check if next to win element
+				int newPosition = translateDirection(direction, i);
+				if (nextToWin(board[newPosition])) {
+					it.remove();
+					board[newPosition].add(be);
+				} else {
+					checkMoveRec(direction, be, i, it);
+				}
+			}
+		}
+	}
+	
+	
+	private void moveElementsUpLeft(List<BoardElem> elements, KeyboardKey direction) {
+		for (int i = 0; i < board.length; i++) {
+			moveIterator(elements, direction, i);
+		}
+	}
+	
+	private void moveElementsDownRight(List<BoardElem> elements, KeyboardKey direction) {
+		for (int i = board.length-1; i >= 0; i--) {
+			moveIterator(elements, direction, i);
+		}
 	}
 
 	/*
 	 * Dï¿½place tous les ï¿½lï¿½ments jouï¿½s puis renvoi un boolï¿½en pour indiquer si la
 	 * partie est gagnï¿½e.
 	 */
-	public boolean moveElements(KeyboardKey direction) {
+	public void moveElements(KeyboardKey direction) {
 		ArrayList<BoardElem> elements = playedElements();
-		ArrayList<BoardElem> toMoveElem = new ArrayList<>();
-		ArrayList<Integer> toMovePrevPos = new ArrayList<>();
-		ArrayList<Integer> toMoveNextPos = new ArrayList<>();
-		for (int i = 0; i < board.length; i++) {
-			for (BoardElem w : board[i]) {
-				if (elements.contains(w)) {
-					// Move element from position [i][j]
-					int newPosition = translateDirection(direction, i);
-					if (win(board[newPosition])) { // Refaire une mï¿½thode win propre !!!
-						return true; // Partie gagnï¿½e
-					}
-				}
-			}
-		} 
-		else {
-			for (int i = 0; i < board.length; i++) {
-				for (BoardElem w : board[i]) {
-					if (elements.contains(w)) {
-						// Move element from position [i][j]
-						int newPosition = translateDirection(direction, i);
-						if (win(board[newPosition])) { // Refaire une mï¿½thode win propre !!!
-							return true; // Partie gagnï¿½e
-						}
-						checkMoveRec(direction, w, i, toMoveElem, toMovePrevPos, toMoveNextPos);
-					}
-				}
-			}
+		if (direction.equals(KeyboardKey.DOWN) || direction.equals(KeyboardKey.RIGHT)) {
+			moveElementsDownRight(elements, direction);
+		} else {
+			moveElementsUpLeft(elements, direction);
 		}
-		changeWordsPlace(toMoveElem, toMovePrevPos, toMoveNextPos);
 		updateProperties();
-		return false;
 	}
 
 	private void insertProperties(ArrayList<Property> list, Property... properties) {
@@ -247,7 +257,6 @@ public class Board {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j<board[i].size(); j++) {
 				if (board[i].get(j).equals(origin.equivalent())) {
-					System.out.println("test");
 					board[i].set(j, toTransform.equivalent());
 				}
 			}

@@ -38,6 +38,7 @@ public class Main {
 			System.out.println("size of the screen (" + width + " x " + height + ")");
 
 			context.renderFrame(graphics -> {
+				graph.drawBoard(graphics, board, width, height);
 				try {
 					board.drawBoard(graph, graphics, width, height);
 				} catch (IOException e) {
@@ -55,13 +56,14 @@ public class Main {
 				// Apr�s avoir r�cup�r� l'action : on fait avancer le jeu comme on le souhaite
 				if (action == Action.KEY_PRESSED) {
 					if (pressableKeys.contains(event.getKey())) {
-						if (board.moveElements(event.getKey())) {
+						board.moveElements(event.getKey());
+						if (board.isWin()) {
 							System.out.println("Partie gagnée !");
 							context.exit(0);
 						}
 						context.renderFrame(graphics -> {
+							graph.drawBoard(graphics, board, width, height);
 							try {
-								graph.drawBoard(graphics, board, width, height);
 								board.drawBoard(graph, graphics, width, height);
 							} catch (IOException e) {
 								e.printStackTrace();

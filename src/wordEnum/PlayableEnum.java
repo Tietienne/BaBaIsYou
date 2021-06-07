@@ -10,7 +10,8 @@ public enum PlayableEnum {
 	skull("Skull_Play"),
 	lava("Lava_Play"),
 	rock("Rock_Play"), 
-	floor("Floor_Play");
+	floor("Floor_Play"),
+	grass("Grass_Play");
 	
 	
 	private final String file_name;

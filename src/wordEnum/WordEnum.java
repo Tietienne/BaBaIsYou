@@ -9,7 +9,7 @@ public enum WordEnum {
 	Melt('M', TypeEnum.Property, "Melt"),
 	Hot('H', TypeEnum.Property, "Hot"),
 	Defeat('D', TypeEnum.Property, "Defeat"),
-	Sink('s', TypeEnum.Property, "Sink"),
+	Sink('N', TypeEnum.Property, "Sink"),
 	
 	//Operator
 	Is('I', TypeEnum.Operator, "Is"),
@@ -31,7 +31,8 @@ public enum WordEnum {
 	water('~', TypeEnum.PlayableElem, "water"),
 	skull('s', TypeEnum.PlayableElem, "skull"),
 	lava('l', TypeEnum.PlayableElem, "lava"),
-	floor('f', TypeEnum.PlayableElem, "floor");
+	floor('f', TypeEnum.PlayableElem, "floor"),
+	grass('g', TypeEnum.PlayableElem, "grass");
 	
 	
 	private final char fileStr;

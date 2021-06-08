@@ -21,7 +21,7 @@ import wordEnum.PropertyEnum;
 public class Board {
 	private final ArrayList<BoardElem> board[];
 	private final int lineLength;
-	private final HashMap<BoardElem, ArrayList<Property>> rules = new HashMap<>();
+	private final HashMap<PlayableElem, ArrayList<Property>> rules = new HashMap<>();
 
 	public Board(ArrayList<BoardElem> board[], int lineLength) {
 		Objects.requireNonNull(board, "Le plateau ne peut pas ï¿½tre null");
@@ -56,7 +56,7 @@ public class Board {
 		return board;
 	}
 
-	public HashMap<BoardElem, ArrayList<Property>> getRules() {
+	public HashMap<PlayableElem, ArrayList<Property>> getRules() {
 		return rules;
 	}
 
@@ -64,7 +64,7 @@ public class Board {
 		return board[i + j * lineLength];
 	}
 
-	public boolean isOver() {
+	public boolean isOver() {		
 		for (BoardElem be : rules.keySet()) {
 			for (Property p : rules.get(be)) {
 				if (p.equals(new Property(PropertyEnum.You)) && elementExists(be)) {
@@ -73,6 +73,38 @@ public class Board {
 			}
 		}
 		return true;
+	}
+	
+	private ArrayList<BoardElem> getToDestroy() {
+		ArrayList<BoardElem> toDestroy = new ArrayList<>();
+		for (BoardElem be : rules.keySet()) {
+			ArrayList<Property> properties = rules.get(be);
+			if (properties.contains(new Property(PropertyEnum.Hot)) && properties.contains(new Property(PropertyEnum.Melt))) {
+				if (!toDestroy.contains(be)) {
+					toDestroy.add(be);
+				}
+			}
+			if (properties.contains(new Property(PropertyEnum.Defeat)) && properties.contains(new Property(PropertyEnum.You))) {
+				if (!toDestroy.contains(be)) {
+					toDestroy.add(be);
+				}
+			}
+		}
+		return toDestroy;
+	}
+	
+	private void checkToDestroy() {
+		ArrayList<BoardElem> toDestroy = getToDestroy();
+		if (toDestroy.size()!=0) {
+			for (int i = 0; i < board.length; i++) {
+				for (Iterator<BoardElem> it = board[i].iterator(); it.hasNext();) {
+					BoardElem be = it.next();
+					if (toDestroy.contains(be)) {
+						it.remove();
+					}
+				}
+			}
+		}
 	}
 
 	private boolean elementExists(BoardElem e) {
@@ -84,6 +116,26 @@ public class Board {
 			}
 		}
 		return false;
+	}
+	
+	private boolean isYou(BoardElem be) {
+		return playedElements().contains(be);
+	}
+	
+	private boolean isDefeat(BoardElem be) {
+		return defeatElements().contains(be);
+	}
+	
+	private boolean isMelt(BoardElem be) {
+		return meltElements().contains(be);
+	}
+	
+	private boolean isHot(BoardElem be) {
+		return hotElements().contains(be);
+	}
+	
+	private boolean isSink(BoardElem be) {
+		return sinkElements().contains(be);
 	}
 
 	private boolean isPushable(BoardElem be) {
@@ -97,30 +149,52 @@ public class Board {
 
 	private boolean isDisabled(BoardElem be) {
 		List<Property> r = rules.get(be);
-		return (r == null || r.equals(new ArrayList<Property>())) && be instanceof PlayableElem;
+		return (r == null || r.size()==0) && be instanceof PlayableElem;
+	}
+	
+	private void addElements(ArrayList<BoardElem> list, PropertyEnum prop) {
+		for (BoardElem be : rules.keySet()) {
+			for (Property p : rules.get(be)) {
+				if (p.equals(new Property(prop)) && elementExists(be)) {
+					list.add(be);
+				}
+			}
+		}
+	}
+	
+	private ArrayList<BoardElem> hotElements() {
+		ArrayList<BoardElem> hot = new ArrayList<>();
+		addElements(hot, PropertyEnum.Hot);
+		return hot;
+	}
+	
+	private ArrayList<BoardElem> meltElements() {
+		ArrayList<BoardElem> melt = new ArrayList<>();
+		addElements(melt, PropertyEnum.Melt);
+		return melt;
+	}
+	
+	private ArrayList<BoardElem> sinkElements() {
+		ArrayList<BoardElem> sinks = new ArrayList<>();
+		addElements(sinks, PropertyEnum.Sink);
+		return sinks;
 	}
 
 	private ArrayList<BoardElem> playedElements() {
 		ArrayList<BoardElem> played = new ArrayList<>();
-		for (BoardElem be : rules.keySet()) {
-			for (Property p : rules.get(be)) {
-				if (p.equals(new Property(PropertyEnum.You)) && elementExists(be)) {
-					played.add(be);
-				}
-			}
-		}
+		addElements(played, PropertyEnum.You);
 		return played;
+	}
+	
+	private ArrayList<BoardElem> defeatElements() {
+		ArrayList<BoardElem> loser = new ArrayList<>();
+		addElements(loser, PropertyEnum.Defeat);
+		return loser;
 	}
 	
 	private ArrayList<BoardElem> winElements() {
 		ArrayList<BoardElem> winner = new ArrayList<>();
-		for (BoardElem be : rules.keySet()) {
-			for (Property p : rules.get(be)) {
-				if (p.equals(new Property(PropertyEnum.Win)) && elementExists(be)) {
-					winner.add(be);
-				}
-			}
-		}
+		addElements(winner, PropertyEnum.Win);
 		return winner;
 	}
 
@@ -145,27 +219,31 @@ public class Board {
 		return newPosition;
 	}
 	
-	public boolean isWin() {
-		ArrayList<BoardElem> player = playedElements();
-		ArrayList<BoardElem> winner = winElements();
-		boolean winP = false;
-		boolean winW = false;
+	private boolean containsSomething(ArrayList<BoardElem> list1, ArrayList<BoardElem> list2) {
+		boolean b1 = false;
+		boolean b2 = false;
 		for (int i = 0; i < board.length; i++) {
-			winP = false;
-			winW = false;
+			b1 = false;
+			b2 = false;
 			for (BoardElem be : board[i]) {
-				if (player.contains(be)) {
-					winP = true;
+				if (list1.contains(be)) {
+					b1 = true;
 				}
-				if (winner.contains(be)) {
-					winW = true;
+				if (list2.contains(be)) {
+					b2 = true;
 				}
 			}
-			if (winP && winW) {
+			if (b1 && b2) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public boolean isWin() {
+		ArrayList<BoardElem> player = playedElements();
+		ArrayList<BoardElem> winner = winElements();
+		return containsSomething(player, winner);
 	}
 
 	private boolean nextToWin(ArrayList<BoardElem> words) {
@@ -184,15 +262,41 @@ public class Board {
 			for (Iterator<BoardElem> it = board[newPosition].iterator(); it.hasNext();) {
 				BoardElem be = it.next();
 				if (!isDisabled(be)) {
-					if (!isPushable(be)) {
-						return false;
+					if (isPushable(be)) {
+						// Elï¿½ment actif ET poussable
+						if (!checkMoveRec(direction, be, newPosition, it)) {
+							// Déplacement impossible : on renvoit false
+							return false;
+						}
+						continue;
 					}
-					// Elï¿½ment actif ET poussable
-					if (!checkMoveRec(direction, be, newPosition, it)) {
-						// Déplacement impossible : on renvoit false
-						return false;
+					
+					if (isSink(be) || isSink(w)) {
+						it.remove();
+						itPrev.remove();
+						return true;
 					}
+					
+					if (isHot(be) && isMelt(w)) {
+						itPrev.remove();
+						return true;
+					}
+					
+					if (isHot(w) && isMelt(be)) {
+						it.remove();
+						continue;
+					}
+					
+					if (isDefeat(be)) {
+						if (isYou(w)) {
+							itPrev.remove();
+							return true;
+						}
+						continue;
+					}
+					return false;
 				}
+
 			}
 			itPrev.remove();
 			board[newPosition].add(w);
@@ -312,17 +416,19 @@ public class Board {
 	}
 
 	private void updateProperties() {
+		rules.clear();
 		for (int i = 0; i < board.length; i++) {
 			for (BoardElem be : board[i]) {
 				if (be instanceof Name) {
 					Property[] properties = checkProperties(i, (Name) be);
-					var l = rules.get(be);
+					var l = rules.get(((Name) be).equivalent());
 					ArrayList<Property> list = l != null ? l : new ArrayList<>();
 					insertProperties(list, properties);
 					rules.put(((Name) be).equivalent(), list);
 				}
 			}
 		}
+		checkToDestroy();
 	}
 
 	public void drawBoard(Graphics graph, Graphics2D context, float width, float height) throws IOException {

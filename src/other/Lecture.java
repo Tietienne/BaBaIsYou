@@ -4,6 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import word.BoardElem;
@@ -20,8 +25,8 @@ import wordEnum.WordEnum;
 public class Lecture {
 	@SuppressWarnings("unchecked")
 	public static Board fileToBoard(String level) throws IOException {
-		File file = new File(level);
-		BufferedReader br = new BufferedReader(new FileReader(file));
+		Path file = Paths.get(level);
+		BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8);
 		String line;
 		WordEnum word = null;
 		int cpt = 0, height = 0, width = 0;

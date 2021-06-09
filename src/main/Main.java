@@ -18,7 +18,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		// Initialisation du niveau
-		Board board = Lecture.fileToBoard("levels/level6.txt");
+		Board board = Lecture.fileToBoard("levels/level5.txt");
 		Graphics graph = new Graphics();
 		ArrayList<KeyboardKey> pressableKeys = new ArrayList<>();
 		pressableKeys.add(KeyboardKey.RIGHT);

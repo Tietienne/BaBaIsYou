@@ -28,6 +28,7 @@ public class Graphics {
 		int column = b.getColumn();
 		int mid_height = (int) (height - 24 * line) / 2;
 		int mid_width = (int) (width - 24 * column) / 2;
+
 		Path file = Paths.get("pictures", be.toString() + ".gif");
 		BufferedImage img = ImageIO.read(Files.newInputStream(file));
 		graphics.drawImage(img, mid_width + i * 24, mid_height + j * 24, null);

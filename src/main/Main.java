@@ -46,7 +46,7 @@ public class Main {
 			if (action == Action.KEY_PRESSED) {
 				if (pressableKeys.contains(event.getKey())) {
 					board.moveElements(event.getKey());
-					if (board.isWin()) {
+					if (board.win()) {
 						System.out.println("Partie gagnée !");
 						return 1;
 					}

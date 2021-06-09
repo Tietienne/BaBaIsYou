@@ -23,6 +23,7 @@ public class Board {
 	private final int lineLength;
 	private final HashMap<PlayableElem, ArrayList<Property>> rules = new HashMap<>();
 
+	
 	public Board(ArrayList<BoardElem> board[], int lineLength) {
 		Objects.requireNonNull(board, "Le plateau ne peut pas �tre null");
 

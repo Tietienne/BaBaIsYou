@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -26,8 +28,8 @@ public class Graphics {
 		int column = b.getColumn();
 		int mid_height = (int) (height - 24 * line) / 2;
 		int mid_width = (int) (width - 24 * column) / 2;
-		File file = new File("pictures/" + be.toString() + ".gif");
-		BufferedImage img = ImageIO.read(file);
+		Path file = Paths.get("pictures", be.toString() + ".gif");
+		BufferedImage img = ImageIO.read(Files.newInputStream(file));
 		graphics.drawImage(img, mid_width + i * 24, mid_height + j * 24, null);
 	}
 }

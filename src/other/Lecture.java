@@ -21,6 +21,12 @@ import wordEnum.WordEnum;
 
 public class Lecture {
 	@SuppressWarnings("unchecked")
+	/**
+	 * Converts the file level to a board usable
+	 * @param level
+	 * @return
+	 * @throws IOException
+	 */
 	public static Board fileToBoard(String level) throws IOException {
 		Path file = Paths.get(level);
 		BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8);

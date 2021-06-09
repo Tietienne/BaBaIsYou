@@ -265,7 +265,7 @@ public class Board {
 					if (isPushable(be)) {
 						// Elï¿½ment actif ET poussable
 						if (!checkMoveRec(direction, be, newPosition, it)) {
-							// Déplacement impossible : on renvoit false
+							// Dï¿½placement impossible : on renvoit false
 							return false;
 						}
 						continue;

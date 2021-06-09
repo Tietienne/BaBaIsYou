@@ -21,13 +21,10 @@ public class Main {
 		Board board = Lecture.fileToBoard("levels/level6.txt");
 		Graphics graph = new Graphics();
 		ArrayList<KeyboardKey> pressableKeys = new ArrayList<>();
-		// graph.printBoard();
-		// board.printRules();
 		pressableKeys.add(KeyboardKey.RIGHT);
 		pressableKeys.add(KeyboardKey.LEFT);
 		pressableKeys.add(KeyboardKey.DOWN);
 		pressableKeys.add(KeyboardKey.UP);
-		// ---- //
 
 		Application.run(Color.BLACK, context -> {
 
@@ -65,7 +62,7 @@ public class Main {
 							graph.drawBoard(graphics, board, width, height);
 							try {
 								board.drawBoard(graph, graphics, width, height);
-							} catch (IOException e) {
+							} catch (IOException e) { 	
 								e.printStackTrace();
 							}
 						});

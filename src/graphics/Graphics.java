@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -15,11 +16,17 @@ import other.Board;
 import word.BoardElem;
 
 public class Graphics {
+	private final HashMap<BoardElem, BufferedImage> pictures = new HashMap<>();
 
 	public void drawBoard(Graphics2D graphics, Board b, float width, float height) {
-		// Couleur du fond
 		graphics.setColor(Color.BLACK);
 		graphics.fill(new Rectangle2D.Float(0, 0, width, height));
+	}
+	
+	public void initializeImage(BoardElem be) throws IOException {
+		Path file = Paths.get("pictures", be.toString() + ".gif");
+		BufferedImage img = ImageIO.read(Files.newInputStream(file));
+		pictures.putIfAbsent(be, img);
 	}
 
 	public void drawImage(Graphics2D graphics, Board b, float width, float height, int i, int j, BoardElem be)
@@ -29,8 +36,6 @@ public class Graphics {
 		int mid_height = (int) (height - 24 * line) / 2;
 		int mid_width = (int) (width - 24 * column) / 2;
 
-		Path file = Paths.get("pictures", be.toString() + ".gif");
-		BufferedImage img = ImageIO.read(Files.newInputStream(file));
-		graphics.drawImage(img, mid_width + i * 24, mid_height + j * 24, null);
+		graphics.drawImage(pictures.get(be), mid_width + i * 24, mid_height + j * 24, null);
 	}
 }

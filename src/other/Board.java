@@ -704,4 +704,19 @@ public class Board {
 			}
 		}
 	}
+	
+	/**
+	 * Method to initialize images of all BoardElem. Uses the Graphics class.
+	 * 
+	 * @param graph Instance of Graphics class
+	 * @throws IOException If problems occurs with reading of pictures
+	 * @see Graphics
+	 */
+	public void initializeImages(Graphics graph) throws IOException {
+		for (int i = 0; i < board.length; i++) {
+			for (BoardElem be : board[i]) {
+				graph.initializeImage(be);
+			}
+		}
+	}
 }

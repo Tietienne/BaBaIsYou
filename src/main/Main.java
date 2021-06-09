@@ -29,6 +29,7 @@ public class Main {
 		context.renderFrame(graphics -> {
 			graph.drawBoard(graphics, board, width, height);
 			try {
+				board.initializeImages(graph);
 				board.drawBoard(graph, graphics, width, height);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -86,7 +87,7 @@ public class Main {
 					board = Lecture.fileToBoard("levels/level" + level + ".txt");
 			
 					Graphics graph = new Graphics();
-					System.out.println(level);
+					System.out.println("Niveau : " + level);
 					if (game(board, graph, pressableKeys, context) == 1 && level < 6)
 						level += 1;
 					else

@@ -80,8 +80,8 @@ public class Main {
 		pressableKeys.add(KeyboardKey.UP);
 
 		Application.run(Color.BLACK, context -> {
-			int level = 1;
-			while (level <= 6) {
+			int level = 7;
+			while (level <= 7) {
 				Board board;
 				try {
 					board = Lecture.fileToBoard("levels/level" + level + ".txt");

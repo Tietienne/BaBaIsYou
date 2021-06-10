@@ -10,7 +10,7 @@ public enum WordEnum {
 	Hot('H', TypeEnum.Property, "Hot"),
 	Defeat('D', TypeEnum.Property, "Defeat"),
 	Sink('N', TypeEnum.Property, "Sink"),
-	Drunk('°', TypeEnum.Property, "Drunk"),
+	Drunk('#', TypeEnum.Property, "Drunk"),
 	
 	//Operator
 	Is('I', TypeEnum.Operator, "Is"),

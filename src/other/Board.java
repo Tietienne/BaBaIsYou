@@ -266,6 +266,17 @@ public class Board {
 	}
 	
 	/**
+	 * Returns all the BoardElem who owns the Property : Drunk
+	 * 
+	 * @return ArrayList of Drunk BoardElem
+	 */
+	private ArrayList<BoardElem> drunkElements() {
+		ArrayList<BoardElem> drunk = new ArrayList<>();
+		addElements(drunk, PropertyEnum.Drunk);
+		return drunk;
+	}
+	
+	/**
 	 * Returns all the BoardElem who owns the Property : Win
 	 * 
 	 * @return ArrayList of Win BoardElem
@@ -332,6 +343,17 @@ public class Board {
 	}
 	
 	/**
+	 * Indicates if the BoardElem owns the Drunk property.
+	 * 
+	 * @param be BoardElem
+	 * @return Boolean : true if it's a Drunk BoardElem, false if not
+	 * @see Board#sinkElements()
+	 */
+	private boolean isDrunk(BoardElem be) {
+		return drunkElements().contains(be);
+	}
+	
+	/**
 	 * Indicates if the BoardElem owns the Win property.
 	 * 
 	 * @param be BoardElem
@@ -369,6 +391,29 @@ public class Board {
 			throw new IllegalArgumentException("Mauvaise touche prise en compte !");
 		}
 		return newPosition;
+	}
+	
+	/**
+	 * Method to return the opposite direction.
+	 * 
+	 * @param direction Direction as KeyboardKey
+	 * @return The opposite direction as KeyboardKey
+	 * @see KeyboardKey
+	 */
+	private KeyboardKey oppositeDirection(KeyboardKey direction) {
+		if (direction.equals(KeyboardKey.LEFT)) {
+			return KeyboardKey.RIGHT;
+		}
+		if (direction.equals(KeyboardKey.RIGHT)) {
+			return KeyboardKey.LEFT;
+		}
+		if (direction.equals(KeyboardKey.UP)) {
+			return KeyboardKey.DOWN;
+		}
+		if (direction.equals(KeyboardKey.DOWN)) {
+			return KeyboardKey.UP;
+		}
+		throw new IllegalArgumentException("Mauvaise touche prise en compte !");
 	}
 	
 	/**
@@ -426,7 +471,7 @@ public class Board {
 	 */
 	private String checkConditions(KeyboardKey direction, BoardElem w, int i, Iterator<BoardElem> itPrev,
 			BoardElem be, int newPosition, Iterator<BoardElem> it) {
-		if (isWin(be) && isYou(w)) {
+		if (isWin(be) && isYou(w) && !isDrunk(w)) {
 			return "continue";
 		}
 		
@@ -541,6 +586,21 @@ public class Board {
 			moveIterator(elements, direction, i);
 		}
 	}
+	
+	/**
+	 * Method who choose the right method to move all elements depending of the direction.
+	 * 
+	 * @param direction Direction as KeyboardKey
+	 * @param elements ArrayList of all elements to move
+	 * @see Board#moveElements(KeyboardKey)
+	 */
+	private void chooseDirectionAndMove(KeyboardKey direction, ArrayList<BoardElem> elements) {
+		if (direction.equals(KeyboardKey.DOWN) || direction.equals(KeyboardKey.RIGHT)) {
+			moveElementsDownRight(elements, direction);
+		} else {
+			moveElementsUpLeft(elements, direction);
+		}
+	}
 
 	/**
 	 * Method to move all the You BoardElem in a direction and then use updateProperties()
@@ -550,10 +610,17 @@ public class Board {
 	 */
 	public void moveElements(KeyboardKey direction) {
 		ArrayList<BoardElem> elements = playedElements();
-		if (direction.equals(KeyboardKey.DOWN) || direction.equals(KeyboardKey.RIGHT)) {
-			moveElementsDownRight(elements, direction);
-		} else {
-			moveElementsUpLeft(elements, direction);
+		ArrayList<BoardElem> drunk = new ArrayList<>();
+		for (Iterator<BoardElem> it = elements.iterator(); it.hasNext();) {
+			BoardElem be = it.next();
+			if (isDrunk(be)) {
+				drunk.add(be);
+				it.remove();
+			}
+		}
+		chooseDirectionAndMove(direction, elements);
+		if (drunk.size()!=0) {
+			chooseDirectionAndMove(oppositeDirection(direction), drunk);
 		}
 		updateProperties();
 	}

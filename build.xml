@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ALEXANDRE_DOMART_BabaIsYou" default="all" basedir=".">
+	<property name="project.sources.dir" value="src"/>
+	<property name="project.bin.dir" value="classes"/>
+	<property name="project.lib.dir" value="lib"/>
+	
+	<path id="project.classpath">
+	  <fileset dir="${project.lib.dir}">
+	    <include name="*.jar"/>
+	  </fileset>
+	  <pathelement location="${project.bin.dir}" />
+	</path>
+	
+	<target name="compile">
+		<javac srcdir="${project.sources.dir}"
+				destdir="${project.bin.dir}"
+				includeantruntime="false">
+			<classpath refid="project.classpath"/>
+		</javac>
+	</target>
+	
+    <manifestclasspath property="mf.classpath" jarfile="baba.jar">
+    	<classpath refid="project.classpath"/>
+    </manifestclasspath>
+	
+	<target name="jar">
+	  <jar jarfile="baba.jar" basedir="src">
+	  	<manifest>
+	  		<attribute name="Main-Class" value="main.Main"/>
+	  		<attribute name="Class-Path" value="${mf.classpath}"/> 
+	  	</manifest>
+	  </jar>		
+	</target>
+	
+	<target name="javadoc">
+	  <javadoc sourcepath="src"
+	              destdir="docs/doc" >
+	    <fileset dir="src" defaultexcludes="yes">
+	      <include name="**" />
+	    </fileset>
+	  	<classpath refid="project.classpath"/>
+	  </javadoc>
+	</target>
+	
+	<target name="all" depends="compile, jar, javadoc">
+	  <echo message="Build is finish."/>
+	</target>
+
+</project>

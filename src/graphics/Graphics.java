@@ -22,7 +22,7 @@ public class Graphics {
 		graphics.setColor(Color.BLACK);
 		graphics.fill(new Rectangle2D.Float(0, 0, width, height));
 	}
-	
+
 	public void initializeImage(BoardElem be) throws IOException {
 		Path file = Paths.get("pictures", be.toString() + ".gif");
 		BufferedImage img = ImageIO.read(Files.newInputStream(file));

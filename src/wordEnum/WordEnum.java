@@ -10,6 +10,7 @@ public enum WordEnum {
 	Hot('H', TypeEnum.Property, "Hot"),
 	Defeat('D', TypeEnum.Property, "Defeat"),
 	Sink('N', TypeEnum.Property, "Sink"),
+	Drunk('°', TypeEnum.Property, "Drunk"),
 	
 	//Operator
 	Is('I', TypeEnum.Operator, "Is"),
@@ -22,6 +23,7 @@ public enum WordEnum {
 	Skull('&', TypeEnum.Name, "Skull"),
 	Lava('L', TypeEnum.Name, "Lava"),
 	Rock('R', TypeEnum.Name, "Rock"),
+	Brain('%', TypeEnum.Name, "Brain"),
 	
 	//Bloc
 	baba('b', TypeEnum.PlayableElem, "baba"),
@@ -32,7 +34,8 @@ public enum WordEnum {
 	skull('s', TypeEnum.PlayableElem, "skull"),
 	lava('l', TypeEnum.PlayableElem, "lava"),
 	floor('f', TypeEnum.PlayableElem, "floor"),
-	grass('g', TypeEnum.PlayableElem, "grass");
+	grass('g', TypeEnum.PlayableElem, "grass"),
+	brain('*', TypeEnum.PlayableElem, "brain");
 	
 	
 	private final char fileStr;

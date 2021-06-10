@@ -9,7 +9,8 @@ public enum NameEnum {
 	Water("Water_Name"),
 	Skull("Skull_Name"),
 	Lava("Lava_Name"),
-	Rock("Rock_Name");
+	Rock("Rock_Name"),
+	Brain("Brain_Name");
 	
 	private final String file_name;
 	

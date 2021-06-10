@@ -8,5 +8,6 @@ public enum PropertyEnum {
 	Melt,
 	Hot,
 	Defeat,
-	Sink;
+	Sink,
+	Drunk;
 }

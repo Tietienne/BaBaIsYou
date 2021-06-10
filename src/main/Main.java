@@ -2,6 +2,8 @@ package main;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import fr.umlv.zen5.Application;
@@ -24,7 +26,6 @@ public class Main {
 		// get the size of the screen
 		float width = screenInfo.getWidth();
 		float height = screenInfo.getHeight();
-		System.out.println("size of the screen (" + width + " x " + height + ")");
 
 		context.renderFrame(graphics -> {
 			graph.drawBoard(graphics, board, width, height);
@@ -80,23 +81,39 @@ public class Main {
 		pressableKeys.add(KeyboardKey.UP);
 
 		Application.run(Color.BLACK, context -> {
-			int level = 7;
-			while (level <= 7) {
-				Board board;
-				try {
-					board = Lecture.fileToBoard("levels/level" + level + ".txt");
-			
-					Graphics graph = new Graphics();
-					System.out.println("Niveau : " + level);
-					if (game(board, graph, pressableKeys, context) == 1 && level < 6)
-						level += 1;
-					else
-						context.exit(0);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			if (args.length == 0 || (args.length == 1 && Files.isDirectory(Paths.get(args[0])))) {
+				int level = 1;
+				while (level <= 7) {
+					Board board;
+					try {
+						board = Lecture.fileToBoard("levels/level" + level + ".txt");
 
+						Graphics graph = new Graphics();
+						if (game(board, graph, pressableKeys, context) == 1 && level < 7)
+							level += 1;
+						else
+							context.exit(0);
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+			else {
+				if(args.length == 1 && Files.exists(Paths.get("levels/" + args[0])) ) {
+					Board board;
+					try {
+						board = Lecture.fileToBoard("levels/" + args[0]);
+
+						Graphics graph = new Graphics();
+						game(board, graph, pressableKeys, context);
+						context.exit(0);
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 

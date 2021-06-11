@@ -17,18 +17,41 @@ import word.BoardElem;
 
 public class Graphics {
 	private final HashMap<BoardElem, BufferedImage> pictures = new HashMap<>();
-
+	
+	/**
+	 * Draw a black rectangle on the screen to hide the previous frame
+	 * @param graphics
+	 * @param b
+	 * @param width
+	 * @param height
+	 */
 	public void drawBoard(Graphics2D graphics, Board b, float width, float height) {
 		graphics.setColor(Color.BLACK);
 		graphics.fill(new Rectangle2D.Float(0, 0, width, height));
 	}
 
+	/**
+	 * Load the picture and put it in the Hashmap if it's absent in it
+	 * @param be
+	 * @throws IOException
+	 */
 	public void initializeImage(BoardElem be) throws IOException {
 		Path file = Paths.get("pictures", be.toString() + ".gif");
 		BufferedImage img = ImageIO.read(Files.newInputStream(file));
 		pictures.putIfAbsent(be, img);
 	}
 
+	/**
+	 * Draw the picture on the screen at the given coordinates
+	 * @param graphics
+	 * @param b
+	 * @param width
+	 * @param height
+	 * @param i
+	 * @param j
+	 * @param be
+	 * @throws IOException
+	 */
 	public void drawImage(Graphics2D graphics, Board b, float width, float height, int i, int j, BoardElem be)
 			throws IOException {
 		int line = b.getLine();

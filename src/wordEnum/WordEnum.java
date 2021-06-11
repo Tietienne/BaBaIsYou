@@ -48,14 +48,26 @@ public enum WordEnum {
 		this.boardStr = name;
 	}
 
+	/**
+	 * Return the name of the block
+	 * @return
+	 */
 	public String getBoardStr() {
 		return boardStr;
 	}
 
+	/**
+	 * Return the character used in the file to represent it
+	 * @return
+	 */
 	public char getFileStr() {
 		return fileStr;
 	}
 
+	/**
+	 * Return the block's type
+	 * @return
+	 */
 	public TypeEnum getType() {
 		return type;
 	}

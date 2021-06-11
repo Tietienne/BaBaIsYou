@@ -18,6 +18,25 @@ import other.Board;
 import other.Lecture;
 
 public class Main {
+	
+	public static String getLevel( String[] args) {
+		for(int i = 0; i < args.length; i++) {
+			if(args[i] == "--level") {
+				if(Files.exists(Paths.get("levels/" + args[i + 1]))) {
+					System.out.println("1");
+					return args[i + 1];
+				}
+					
+			}
+			if(args[i] == "--levels")
+				if(Files.isDirectory(Paths.get(args[0]))) {
+					System.out.println("2");
+					return "";	
+					}
+
+		}
+		return null;
+	}
 
 	public static int game(Board board, Graphics graph, ArrayList<KeyboardKey> pressableKeys,
 			ApplicationContext context) {
@@ -81,7 +100,8 @@ public class Main {
 		pressableKeys.add(KeyboardKey.UP);
 
 		Application.run(Color.BLACK, context -> {
-			if (args.length == 0 || (args.length == 1 && Files.isDirectory(Paths.get(args[0])))) {
+			if (getLevel(args) == "" || getLevel(args) == null) {
+				System.out.println("3");
 				int level = 1;
 				while (level <= 7) {
 					Board board;
@@ -101,10 +121,10 @@ public class Main {
 				}
 			}
 			else {
-				if(args.length == 1 && Files.exists(Paths.get("levels/" + args[0])) ) {
+				if(getLevel(args) != null && getLevel(args) != "") {
 					Board board;
 					try {
-						board = Lecture.fileToBoard("levels/" + args[0]);
+						board = Lecture.fileToBoard(getLevel(args));
 
 						Graphics graph = new Graphics();
 						game(board, graph, pressableKeys, context);

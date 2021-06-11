@@ -22,7 +22,7 @@ import wordEnum.WordEnum;
 public class Lecture {
 	@SuppressWarnings("unchecked")
 	/**
-	 * Converts the file level to a board usable
+	 * Converts the file level to a board usable for the game
 	 * @param level
 	 * @return
 	 * @throws IOException

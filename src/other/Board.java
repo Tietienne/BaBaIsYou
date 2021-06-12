@@ -762,7 +762,7 @@ public class Board {
 	 * @param name Name of BoardElem
 	 * @param p    Property
 	 */
-	public void addCheatProperty(Name name, Property p) {
+	private void addCheatProperty(Name name, Property p) {
 		var list = cheatRules.getOrDefault(name.equivalent(), new ArrayList<Property>());
 		list.add(p);
 		cheatRules.put(name.equivalent(), list);
@@ -776,9 +776,10 @@ public class Board {
 	 */
 	private void updateProperties() {
 		rules.clear();
-		cheatRules.forEach((key, value) -> rules.merge(key, value, (oldValue, newValue) -> {
-			return oldValue;
-		}));
+		for (var k : cheatRules.keySet()) {
+			ArrayList<Property> props = new ArrayList<Property>(cheatRules.get(k));
+			rules.put(k, props);
+		}
 		for (int i = 0; i < board.length; i++) {
 			for (BoardElem be : board[i]) {
 				if (be instanceof Name) {
@@ -829,45 +830,23 @@ public class Board {
 
 	/**
 	 * Create rules based on arguments given 
-	 * @param args String[]
+	 * @param args String[] of arguments
 	 */
 	public void getCheat(String[] args) {
-		WordEnum name = null;
-		WordEnum operator = null;
-		WordEnum property = null;
 		for (int i = 0; i < args.length; i++) {
+			WordEnum name = null, operator = null, property = null;
 			if (args[i].equals("--execute")) {
-				for (WordEnum wordenum : WordEnum.values()) {
-					if (wordenum.getBoardStr().equals(args[i + 1])) {
-						name = wordenum;
-					}
+				name = WordEnum.equivalent(args[i + 1]);
+				operator = WordEnum.equivalent(args[i + 2]);
+				property = WordEnum.equivalent(args[i + 3]);
+				if(name == null || operator == null || property == null) {
+					continue;
 				}
-				if(name == null)
-					return;
-				if (name.getType() == TypeEnum.Name) {
+				if (name.getType() == TypeEnum.Name && operator.getType() == TypeEnum.Operator && property.getType() == TypeEnum.Property) {
 					Name new_name = new Name(NameEnum.valueOf(name.getBoardStr()));
-					for (WordEnum wordenum : WordEnum.values()) {
-						if (wordenum.getBoardStr().equals(args[i + 2])) {
-							operator = wordenum;
-						}
-					}
-					if(operator == null)
-						return;
-					if (operator.getType() == TypeEnum.Operator) {
-						for (WordEnum wordenum : WordEnum.values()) {
-							if (wordenum.getBoardStr().equals(args[i + 3])) {
-								property = wordenum;
-							}
-						}
-						if(property == null)
-							return;
-						if (property.getType() == TypeEnum.Property) {
-							Property new_prop = new Property(PropertyEnum.valueOf(property.getBoardStr()));
-							addCheatProperty(new_name, new_prop);
-						}
-					}
+					Property new_prop = new Property(PropertyEnum.valueOf(property.getBoardStr()));
+					addCheatProperty(new_name, new_prop);
 				}
-
 			}
 		}
 	}

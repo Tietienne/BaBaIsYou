@@ -28,7 +28,6 @@ public class Main {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("--level")) {
 				if (Files.exists(Paths.get("levels/" + args[i + 1]))) {
-					System.out.println("1");
 					return "levels/" + args[i + 1];
 				}
 
@@ -123,13 +122,13 @@ public class Main {
 		pressableKeys.add(KeyboardKey.LEFT);
 		pressableKeys.add(KeyboardKey.DOWN);
 		pressableKeys.add(KeyboardKey.UP);
-
+		
 		Application.run(Color.BLACK, context -> {
-			if (getLevel(args) == "" || getLevel(args) == null) {
-				int level = 1;
-				while (level <= 7) {
-					Board board;
-					try {
+			try {
+				if (getLevel(args) == "" || getLevel(args) == null) {
+					int level = 1;
+					while (level <= 7) {
+						Board board;
 						board = Lecture.fileToBoard("levels/level" + level + ".txt");
 						board.getCheat(args);
 
@@ -138,27 +137,20 @@ public class Main {
 							level += 1;
 						else
 							context.exit(0);
-
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
-
-				}
-			} else {
-				if (getLevel(args) != null && getLevel(args) != "") {
-					Board board;
-					try {
+				} else {
+					if (getLevel(args) != null && getLevel(args) != "") {
+						Board board;
 						board = Lecture.fileToBoard(getLevel(args));
 						board.getCheat(args);
-
+	
 						Graphics graph = new Graphics();
 						game(board, graph, pressableKeys, context);
 						context.exit(0);
-
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
+			} catch (IOException e) {
+				System.out.println(e);
 			}
 		});
 

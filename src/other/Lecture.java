@@ -20,7 +20,6 @@ import wordEnum.PropertyEnum;
 import wordEnum.WordEnum;
 
 public class Lecture {
-	@SuppressWarnings("unchecked")
 	/**
 	 * Converts the file level to a board usable for the game
 	 * @param level
@@ -97,6 +96,7 @@ public class Lecture {
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public static Board fileToBoard(String level) throws IOException {
 		Path file = Paths.get(level);
 		BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8);

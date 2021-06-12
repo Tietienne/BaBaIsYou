@@ -71,5 +71,20 @@ public enum WordEnum {
 	public TypeEnum getType() {
 		return type;
 	}
+	
+	/**
+	 * Method to return the WordEnum equivalent from a String
+	 * 
+	 * @param s String
+	 * @return WordEnum if the equivalent exists or null if not
+	 */
+	public static WordEnum equivalent(String s) {
+		for (WordEnum wordenum : WordEnum.values()) {
+			if (wordenum.getBoardStr().equals(s)) {
+				return wordenum;
+			}
+		}
+		return null;
+	}
 
 }

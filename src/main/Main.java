@@ -12,38 +12,59 @@ import fr.umlv.zen5.Event;
 import fr.umlv.zen5.Event.Action;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
-
 import graphics.Graphics;
 import other.Board;
 import other.Lecture;
 
 public class Main {
-	
+
 	/**
 	 * Check if a level or a directory level is given as argument
-	 * @param args
+	 * 
+	 * @param args String[] 
 	 * @return
 	 */
-	public static String getLevel( String[] args) {
-		for(int i = 0; i < args.length; i++) {
-			if(args[i].equals("--level")) {
-				if(Files.exists(Paths.get("levels/" + args[i + 1]))) {
+	public static String getLevel(String[] args) {
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("--level")) {
+				if (Files.exists(Paths.get("levels/" + args[i + 1]))) {
 					System.out.println("1");
 					return "levels/" + args[i + 1];
 				}
-					
+
 			}
-			if(args[i].equals("--levels"))
-				if(Files.isDirectory(Paths.get(args[i]))) {
-					return "";	
-					}
+			if (args[i].equals("--levels"))
+				if (Files.isDirectory(Paths.get(args[i]))) {
+					return "";
+				}
 
 		}
 		return null;
 	}
 
 	/**
+	 * Draw the initial frame on the screen depending to the board
+	 * @param context 
+	 * @param board
+	 * @param width
+	 * @param height
+	 * @param graph
+	 */
+	public static void initalFrame(ApplicationContext context, Board board, float width, float height, Graphics graph) {
+		context.renderFrame(graphics -> {
+			graph.drawBoard(graphics, board, width, height);
+			try {
+				board.initializeImages(graph);
+				board.drawBoard(graph, graphics, width, height);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	/**
 	 * Execute the game with the board loaded before
+	 * 
 	 * @param board
 	 * @param graph
 	 * @param pressableKeys
@@ -58,15 +79,7 @@ public class Main {
 		float width = screenInfo.getWidth();
 		float height = screenInfo.getHeight();
 
-		context.renderFrame(graphics -> {
-			graph.drawBoard(graphics, board, width, height);
-			try {
-				board.initializeImages(graph);
-				board.drawBoard(graph, graphics, width, height);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+		initalFrame(context, board, width, height, graph);
 
 		// Boucle du jeu tant que le joueur n'a pas perdu.
 		while (!board.isOver()) {
@@ -118,6 +131,7 @@ public class Main {
 					Board board;
 					try {
 						board = Lecture.fileToBoard("levels/level" + level + ".txt");
+						board.getCheat(args);
 
 						Graphics graph = new Graphics();
 						if (game(board, graph, pressableKeys, context) == 1 && level < 7)
@@ -130,12 +144,12 @@ public class Main {
 					}
 
 				}
-			}
-			else {
-				if(getLevel(args) != null && getLevel(args) != "") {
+			} else {
+				if (getLevel(args) != null && getLevel(args) != "") {
 					Board board;
 					try {
 						board = Lecture.fileToBoard(getLevel(args));
+						board.getCheat(args);
 
 						Graphics graph = new Graphics();
 						game(board, graph, pressableKeys, context);

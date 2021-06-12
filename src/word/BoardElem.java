@@ -10,6 +10,10 @@ public abstract class BoardElem {
 		this.name = name;
 	}
 	
+	/**
+	 * Give the name of the BoardElem
+	 * @return name String
+	 */
 	public String getName() {
 		return name;
 	}

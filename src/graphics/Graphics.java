@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+	
 import other.Board;
 import word.BoardElem;
 
@@ -20,10 +21,10 @@ public class Graphics {
 	
 	/**
 	 * Draw a black rectangle on the screen to hide the previous frame
-	 * @param graphics
-	 * @param b
-	 * @param width
-	 * @param height
+	 * @param graphics Graphics2D
+	 * @param b Board
+	 * @param width Width of the window
+	 * @param height Height of the window
 	 */
 	public void drawBoard(Graphics2D graphics, Board b, float width, float height) {
 		graphics.setColor(Color.BLACK);
@@ -32,7 +33,7 @@ public class Graphics {
 
 	/**
 	 * Load the picture and put it in the Hashmap if it's absent in it
-	 * @param be
+	 * @param be BoardElem
 	 * @throws IOException
 	 */
 	public void initializeImage(BoardElem be) throws IOException {
@@ -43,13 +44,13 @@ public class Graphics {
 
 	/**
 	 * Draw the picture on the screen at the given coordinates
-	 * @param graphics
-	 * @param b
-	 * @param width
-	 * @param height
-	 * @param i
-	 * @param j
-	 * @param be
+	 * @param graphics Graphics2D
+	 * @param b Board
+	 * @param width {@link WCWidth} of the window
+	 * @param height Height of the window
+	 * @param i int
+	 * @param j int
+	 * @param be BoardElem
 	 * @throws IOException
 	 */
 	public void drawImage(Graphics2D graphics, Board b, float width, float height, int i, int j, BoardElem be)

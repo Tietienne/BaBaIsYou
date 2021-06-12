@@ -55,6 +55,11 @@ public class Board {
 	 * @see Property
 	 */
 	private final HashMap<PlayableElem, ArrayList<Property>> rules = new HashMap<>();
+	
+	/**
+	 * The set of permanent rules used for cheating: a HashMap with PlayableElem : ArrayList of Property.
+	 */
+	private final HashMap<PlayableElem, ArrayList<Property>> cheatRules = new HashMap<>();
 
 	/**
 	 * Method for creating the game board.
@@ -730,6 +735,18 @@ public class Board {
 		properties[1] = checkColumnDown(index, n);
 		return properties;
 	}
+	
+	/**
+	 * Method to add a Property in the cheatRules HashMap.
+	 * 
+	 * @param name Name of BoardElem
+	 * @param p Property
+	 */
+	public void addCheatProperty(Name name, Property p) {
+		var list = cheatRules.getOrDefault(name.equivalent(), new ArrayList<Property>());
+		list.add(p);
+		cheatRules.put(name.equivalent(), list);
+	}
 
 	/**
 	 * Update all the rules in the board.
@@ -739,6 +756,7 @@ public class Board {
 	 */
 	private void updateProperties() {
 		rules.clear();
+		cheatRules.forEach((key, value) -> rules.merge(key, value, (oldValue, newValue) -> { return oldValue;}));
 		for (int i = 0; i < board.length; i++) {
 			for (BoardElem be : board[i]) {
 				if (be instanceof Name) {
@@ -752,6 +770,8 @@ public class Board {
 		}
 		checkToDestroy();
 	}
+	
+	
 
 	/**
 	 * Method to draw the board. Uses the Graphics class.

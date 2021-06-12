@@ -19,18 +19,22 @@ import other.Lecture;
 
 public class Main {
 	
+	/**
+	 * Check if a level or a directory level is given as argument
+	 * @param args
+	 * @return
+	 */
 	public static String getLevel( String[] args) {
 		for(int i = 0; i < args.length; i++) {
-			if(args[i] == "--level") {
+			if(args[i].equals("--level")) {
 				if(Files.exists(Paths.get("levels/" + args[i + 1]))) {
 					System.out.println("1");
-					return args[i + 1];
+					return "levels/" + args[i + 1];
 				}
 					
 			}
-			if(args[i] == "--levels")
-				if(Files.isDirectory(Paths.get(args[0]))) {
-					System.out.println("2");
+			if(args[i].equals("--levels"))
+				if(Files.isDirectory(Paths.get(args[i]))) {
 					return "";	
 					}
 
@@ -38,6 +42,14 @@ public class Main {
 		return null;
 	}
 
+	/**
+	 * Execute the game with the board loaded before
+	 * @param board
+	 * @param graph
+	 * @param pressableKeys
+	 * @param context
+	 * @return
+	 */
 	public static int game(Board board, Graphics graph, ArrayList<KeyboardKey> pressableKeys,
 			ApplicationContext context) {
 
@@ -101,7 +113,6 @@ public class Main {
 
 		Application.run(Color.BLACK, context -> {
 			if (getLevel(args) == "" || getLevel(args) == null) {
-				System.out.println("3");
 				int level = 1;
 				while (level <= 7) {
 					Board board;

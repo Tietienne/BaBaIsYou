@@ -16,7 +16,18 @@ import javax.imageio.ImageIO;
 import other.Board;
 import word.BoardElem;
 
+/**
+ * Class who regroups all methods to draw things on a canvas with Zen5 library.
+ * 
+ * @author Etienne and Guillaume
+ * @version 1.0
+ */
 public class Graphics {
+	/**
+	 * Keep in memory the images associated with a BoardElem
+	 * 
+	 * @see BoardElem
+	 */
 	private final HashMap<BoardElem, BufferedImage> pictures = new HashMap<>();
 	
 	/**
@@ -25,6 +36,7 @@ public class Graphics {
 	 * @param b Board
 	 * @param width Width of the window
 	 * @param height Height of the window
+	 * @see Board
 	 */
 	public void drawBoard(Graphics2D graphics, Board b, float width, float height) {
 		graphics.setColor(Color.BLACK);
@@ -34,7 +46,8 @@ public class Graphics {
 	/**
 	 * Load the picture and put it in the Hashmap if it's absent in it
 	 * @param be BoardElem
-	 * @throws IOException
+	 * @throws IOException In case of read problems of the image
+	 * @see BoardElem
 	 */
 	public void initializeImage(BoardElem be) throws IOException {
 		Path file = Paths.get("pictures", be.toString() + ".gif");
@@ -46,15 +59,14 @@ public class Graphics {
 	 * Draw the picture on the screen at the given coordinates
 	 * @param graphics Graphics2D
 	 * @param b Board
-	 * @param width {@link WCWidth} of the window
+	 * @param width Width of the window
 	 * @param height Height of the window
-	 * @param i int
-	 * @param j int
-	 * @param be BoardElem
-	 * @throws IOException
+	 * @param i Int : position of the line
+	 * @param j Int : position of the column
+	 * @param be The BoardElem to draw
+	 * @see BoardElem
 	 */
-	public void drawImage(Graphics2D graphics, Board b, float width, float height, int i, int j, BoardElem be)
-			throws IOException {
+	public void drawImage(Graphics2D graphics, Board b, float width, float height, int i, int j, BoardElem be) {
 		int line = b.getLine();
 		int column = b.getColumn();
 		int mid_height = (int) (height - 24 * line) / 2;

@@ -16,13 +16,19 @@ import graphics.Graphics;
 import other.Board;
 import other.Lecture;
 
+/**
+ * The Main class used to launch the game
+ * 
+ * @author Etienne and Guillaume
+ * @version 1.0
+ */
 public class Main {
 
 	/**
 	 * Check if a level or a directory level is given as argument
 	 * 
-	 * @param args String[] 
-	 * @return
+	 * @param args Array of String 
+	 * @return The name of a level or null if no arguments are given
 	 */
 	public static String getLevel(String[] args) {
 		for (int i = 0; i < args.length; i++) {
@@ -43,11 +49,14 @@ public class Main {
 
 	/**
 	 * Draw the initial frame on the screen depending to the board
-	 * @param context 
-	 * @param board
-	 * @param width
-	 * @param height
-	 * @param graph
+	 * @param context Context of library Zen5
+	 * @param board A board
+	 * @param width The width of the screen
+	 * @param height The height of the screen
+	 * @param graph An instance of the Graphics class
+	 * @see ApplicationContext
+	 * @see Board
+	 * @see Graphics
 	 */
 	public static void initalFrame(ApplicationContext context, Board board, float width, float height, Graphics graph) {
 		context.renderFrame(graphics -> {
@@ -64,11 +73,11 @@ public class Main {
 	/**
 	 * Execute the game with the board loaded before
 	 * 
-	 * @param board
-	 * @param graph
-	 * @param pressableKeys
-	 * @param context
-	 * @return
+	 * @param board A board
+	 * @param graph An instance of the Graphics class
+	 * @param pressableKeys List of keys who can be pressed
+	 * @param context Context of library Zen5
+	 * @return An int : 1 - game is win, 0 - game is lose, -1 - game is abandoned
 	 */
 	public static int game(Board board, Graphics graph, ArrayList<KeyboardKey> pressableKeys,
 			ApplicationContext context) {
@@ -114,9 +123,14 @@ public class Main {
 		System.out.println("Partie Perdu !");
 		return 0;
 	}
-
+	
+	/**
+	 * Main method : used to launch the game.
+	 * 
+	 * @param args Array of String : arguments of the program
+	 * @throws IOException In case of read problems with .txt file
+	 */
 	public static void main(String[] args) throws IOException {
-		// Initialisation du niveau
 		ArrayList<KeyboardKey> pressableKeys = new ArrayList<>();
 		pressableKeys.add(KeyboardKey.RIGHT);
 		pressableKeys.add(KeyboardKey.LEFT);

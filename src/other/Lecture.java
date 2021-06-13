@@ -19,18 +19,17 @@ import wordEnum.PlayableEnum;
 import wordEnum.PropertyEnum;
 import wordEnum.WordEnum;
 
-public class Lecture {
-	/**
-	 * Converts the file level to a board usable for the game
-	 * @param level
-	 * @return
-	 * @throws IOException
-	 */
-	
+/**
+ * Class who regroups all methods to read a .txt file and can transform it into a Board.
+ * 
+ * @author Etienne and Guillaume
+ * @version 1.0
+ */
+public class Lecture {	
 	/**
 	 * Return the Width of the level depending on the value on the file
-	 * @param line
-	 * @return
+	 * @param line A line as a String
+	 * @return Int : width of the level
 	 */
 	public static int getWidthLevel(String line) {
 		StringBuilder sWidth = new StringBuilder();
@@ -40,8 +39,8 @@ public class Lecture {
 	
 	/**
 	 * Return the Height of the level depending on the value on the file
-	 * @param line
-	 * @return
+	 * @param line A line as a String
+	 * @return Int : height of the level
 	 */
 	public static int getHeightLevel(String line) {
 		StringBuilder sHeight = new StringBuilder();
@@ -51,11 +50,11 @@ public class Lecture {
 	
 	/**
 	 * Fill the board on the line "cpt" compared to the String line
-	 * @param line String
-	 * @param board ArrayList<BoardElem>
-	 * @param cpt int 
+	 * @param line A line as a String
+	 * @param board ArrayList of BoardElem
+	 * @param cpt Int : the line place number
 	 * @param width Width of the window
-	 * @return
+	 * @return An array of ArrayList of BoardElem
 	 */
 	public static ArrayList<BoardElem>[] fillBoard(String line, ArrayList<BoardElem> board[], int cpt, int width) {
 		WordEnum word = null;
@@ -92,9 +91,10 @@ public class Lecture {
 	
 	/**
 	 * Convert the file to a Board usable for the game
-	 * @param level String
-	 * @return
-	 * @throws IOException
+	 * @param level A level as a String
+	 * @return A Board created from the String level
+	 * @throws IOException In case of read problems with the .txt file
+	 * @see Board
 	 */
 	@SuppressWarnings("unchecked")
 	public static Board fileToBoard(String level) throws IOException {
